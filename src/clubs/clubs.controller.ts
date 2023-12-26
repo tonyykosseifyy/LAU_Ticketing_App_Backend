@@ -1,12 +1,10 @@
 import { Body, Controller, Post, Get, Res, Delete, Param } from '@nestjs/common';
 import { ClubsService } from './clubs.service';
 import { CreateClubDto } from './dto/create-club.dto';
-import { IClub } from './interface/club.interface';
 
 @Controller('clubs')
 export class ClubsController {
     constructor(private readonly clubsService: ClubsService) {}
-
 
     @Get()
     async getClubs(@Res() response) {

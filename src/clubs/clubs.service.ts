@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
 import { IClub } from './interface/club.interface';
 import { CreateClubDto } from './dto/create-club.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ClubsService {
@@ -17,6 +18,9 @@ export class ClubsService {
         if (oldClub) {
             throw new NotFoundException(`Club ${club.name} already exists`);
         }
+        const hashedPassword = await bcrypt.hash(club.password, 10);
+        club.password = hashedPassword;
+
         const newClub = new this.clubModel(club);
         return await newClub.save();
     }
