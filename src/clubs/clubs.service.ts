@@ -36,5 +36,11 @@ export class ClubsService {
         await this.clubModel.deleteOne({ _id: id });
         return club;
     }
+
+
+
+    async getClub(name: string): Promise<IClub> {
+        return await this.clubModel.findOne({ name: { $regex: name , $options: 'i' } });
+    }
     
 }
