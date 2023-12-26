@@ -7,6 +7,22 @@ import { IClub } from './interface/club.interface';
 export class ClubsController {
     constructor(private readonly clubsService: ClubsService) {}
 
+
+    @Get()
+    async getClubs(@Res() response) {
+        try {
+            const clubs = await this.clubsService.getClubs();
+            return response.status(200).json({
+                clubs
+            });
+        } catch(err) {
+            return response.status(err.status).json({
+                status: err.status,
+                message: err.message
+            });
+        }
+    }
+    
     @Post()
     async create(@Res() response, @Body() createClubDto: CreateClubDto) {
         try {
@@ -23,18 +39,7 @@ export class ClubsController {
           }
     }
 
-    @Get()
-    async getClubs(@Res() response) {
-        try {
-            const clubs = await this.clubsService.getClubs();
-            return response.status(200).json({
-                clubs
-            });
-        } catch(err) {
-            return response.status(err.status).json({
-                status: err.status,
-                message: err.message
-            });
-        }
-    }
+    
+
+
 }

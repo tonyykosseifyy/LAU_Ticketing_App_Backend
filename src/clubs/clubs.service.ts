@@ -8,10 +8,10 @@ import { CreateClubDto } from './dto/create-club.dto';
 export class ClubsService {
     constructor(@InjectModel('Club') private readonly clubModel: Model<IClub>) {}
 
-    async getClub(name: string) : Promise<IClub> {
-        return await this.clubModel.findOne({ name: { $regex: name , $options: 'i' } });
+    async getClubs() : Promise<IClub[]> {
+        return await this.clubModel.find();
     }
-
+    
     async create(club: CreateClubDto): Promise<IClub> {
         const oldClub = await this.clubModel.findOne({ name: { $regex: club.name , $options: 'i' } });
         if (oldClub) {
@@ -21,9 +21,7 @@ export class ClubsService {
         return await newClub.save();
     }
 
-    async getClubs() : Promise<IClub[]> {
-        return await this.clubModel.find();
-    }
+    
 
 
 }
