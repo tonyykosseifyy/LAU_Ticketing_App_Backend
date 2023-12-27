@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Res, Delete, Param } from '@nestjs/common';
+import { Body, Controller, Post, Get, Res, Delete, Param, Request, UseGuards } from '@nestjs/common';
 import { ClubsService } from './clubs.service';
 import { CreateClubDto } from './dto/create-club.dto';
 
@@ -52,6 +52,12 @@ export class ClubsController {
             });
         }
     }
+    
+    // @UseGuards(AuthenticatedGuard)
+    // @Get('/protected')
+    // getHello(@Request() req): string {  
+    //   return req.user;
+    // }
 
 
 }

@@ -12,12 +12,11 @@ import { AuthModule } from './auth/auth.module';
 
 
 @Module({
-  controllers: [AppController, StudentController],
-  providers: [AppService, StudentService],
+  controllers: [AppController],
+  providers: [AppService],
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(`mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0.0gnozrq.mongodb.net/?retryWrites=true&w=majority`,{dbName: 'LAU_EVENTS'}),
-    MongooseModule.forFeature([{ name: 'Student', schema: StudentSchema }]),
     MongooseModule.forFeature([{ name: 'Club', schema: ClubSchema }]),
     ClubsModule,
     AuthModule
