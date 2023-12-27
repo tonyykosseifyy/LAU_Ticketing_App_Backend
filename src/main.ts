@@ -4,16 +4,21 @@ import { ValidationPipe } from '@nestjs/common';
 import * as session from "express-session"
 import * as passport from "passport"
 import * as process from 'process';
+import { ConfigService } from "@nestjs/config";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const configService = app.get(ConfigService);
+
   app.useGlobalPipes(new ValidationPipe());
+  
   app.use(
     session({
-      secret: process.env.SESSION_SECRET,
-      resave: Boolean(process.env.SESSION_RESAVE),
-      saveUninitialized: Boolean(process.env.SESSION_SAVE_UNINITIALIZED),
-      cookie: { maxAge: +process.env.SESSION_COOKIE_MAX_AGE },
+      secret: configService.get("SESSION_SECRET"),
+      resave: Boolean(configService.get("SESSION_RESAVE")),
+      saveUninitialized: Boolean(configService.get("SESSION_SAVE_UNINITIALIZED")),
+      cookie: { maxAge: +configService.get("SESSION_MAX_AGE") },
     }),
   );
   app.use(passport.initialize());
