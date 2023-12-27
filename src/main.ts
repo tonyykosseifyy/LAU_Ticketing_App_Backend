@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as session from "express-session"
 import * as passport from "passport"
-import * as process from 'process';
 import { ConfigService } from "@nestjs/config";
 
 async function bootstrap() {
@@ -12,7 +11,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.useGlobalPipes(new ValidationPipe());
-  
+
   app.use(
     session({
       secret: configService.get("SESSION_SECRET"),
