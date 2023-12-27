@@ -6,7 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ClubsModule } from './clubs/clubs.module';
 import { ClubSchema } from './clubs/schemas/club.schema';
 import { AuthModule } from './auth/auth.module';
-
+import { EventsModule } from './events/events.module';
+import { EventSchema } from './events/schemas/event.schema';
 
 @Module({
   controllers: [AppController],
@@ -15,8 +16,10 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot(),
     MongooseModule.forRoot(`mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0.0gnozrq.mongodb.net/?retryWrites=true&w=majority`,{dbName: 'LAU_EVENTS'}),
     MongooseModule.forFeature([{ name: 'Club', schema: ClubSchema }]),
+    MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]),
     ClubsModule,
-    AuthModule
+    AuthModule,
+    EventsModule  
   ],
 })
 
