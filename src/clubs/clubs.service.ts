@@ -38,7 +38,6 @@ export class ClubsService {
     }
 
 
-
     async getClub(name: string): Promise<IClub> {
         return await this.clubModel.findOne({ name: { $regex: name , $options: 'i' } });
     }
