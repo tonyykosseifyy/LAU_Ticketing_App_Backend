@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as session from "express-session"
 import * as passport from "passport"
 import { ConfigService } from "@nestjs/config";
+import { AuthenticatedGuard } from './auth/authenticated.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.useGlobalPipes(new ValidationPipe());
+  
 
   app.use(
     session({
@@ -23,6 +25,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  app.useGlobalGuards(new AuthenticatedGuard());
 
   await app.listen(3000);
 }
