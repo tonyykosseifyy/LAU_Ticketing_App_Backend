@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 @Schema()
 export class Club extends Document {
@@ -15,6 +15,10 @@ export class Club extends Document {
 
   @Prop({ default: true })
   first_login: boolean;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Event' }], default: [] })
+  events: Types.ObjectId[];
+  
 }
 
 export const ClubSchema = SchemaFactory.createForClass(Club);

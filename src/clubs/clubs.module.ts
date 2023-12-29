@@ -8,7 +8,7 @@ import { ClubSchema } from './schemas/club.schema';
   imports: [MongooseModule.forFeature([{ name: "Club", schema: ClubSchema }])],
   providers: [ClubsService],
   controllers: [ClubsController],
-  exports: [ClubsService]
+  exports: [ClubsService, MongooseModule]
 })
 
 export class ClubsModule {}

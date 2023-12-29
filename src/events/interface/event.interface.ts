@@ -6,4 +6,5 @@ export interface IEvent extends Document {
     readonly scan_type: 'barcode' | 'qrcode';
     readonly start_date: Date;
     readonly end_date: Date;
+    readonly clubs: string[];
 }

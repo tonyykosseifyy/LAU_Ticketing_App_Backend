@@ -11,7 +11,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({transform: true}));
   
 
   app.use(
