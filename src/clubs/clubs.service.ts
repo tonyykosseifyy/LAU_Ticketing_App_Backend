@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, HttpException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
 import { IClub } from './interface/club.interface';
 import { CreateClubDto } from './dto/create-club.dto';
 import * as bcrypt from 'bcrypt';
+import { Exception } from 'handlebars';
 
 @Injectable()
 export class ClubsService {
@@ -18,11 +19,22 @@ export class ClubsService {
         if (oldClub) {
             throw new NotFoundException(`Club ${club.name} already exists`);
         }
+        
         const hashedPassword = await bcrypt.hash(club.password, 10);
+
         club.password = hashedPassword;
 
         const newClub = new this.clubModel(club);
-        await newClub.save();
+        try {
+            await newClub.save();
+        } catch (err){
+            if (err.code === 11000) {
+                throw new BadRequestException('Email should be unique for a given Club');
+            }
+            throw new BadRequestException('Could not create club');
+        }
+
+        
         return newClub;
     }
 

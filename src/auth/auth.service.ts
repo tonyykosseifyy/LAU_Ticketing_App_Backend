@@ -3,7 +3,6 @@ import { ClubsService } from '../clubs/clubs.service';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { MailService } from '../mail/mail.service';
-import { IcalAttachment } from 'nodemailer/lib/mailer';
 import { VerifyDto } from './dto/verify-code.dto';
 
 const otpGenerator = require( 'otp-generator');
