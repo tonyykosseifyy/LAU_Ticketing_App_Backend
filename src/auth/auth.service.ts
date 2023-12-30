@@ -2,11 +2,16 @@ import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
 import { ClubsService } from '../clubs/clubs.service';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
+import { MailService } from '../mail/mail.service';
+
 const otpGenerator = require( 'otp-generator');
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly clubsService: ClubsService) {}
+  constructor(
+    private readonly clubsService: ClubsService,
+    private readonly mailService: MailService  
+  ) {}
 
   async validateClub(name: string, password: string): Promise<any> {
     const club = await this.clubsService.getClub(name);
@@ -31,8 +36,13 @@ export class AuthService {
       console.log(club);
 
       await club.save();
-      throw new HttpException('Please verify your email', HttpStatus.BAD_REQUEST);
       // send verification code via email
+      await this.mailService.sendUserCode(club, verificationCode);
+
+      throw new HttpException(
+        'A 6-digit verification code has been sent to your email. Please check your email for verification.', 
+        HttpStatus.BAD_REQUEST
+      );
     }
 
     return {

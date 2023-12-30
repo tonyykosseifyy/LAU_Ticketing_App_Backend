@@ -6,8 +6,7 @@ import { IClub } from 'src/clubs/interface/club.interface';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendUserConfirmation(club: IClub, code: string) {
-
+  async sendUserCode(club: IClub, code: string) {
     await this.mailerService.sendMail({
       to: club.email,
       subject: 'Welcome to LAU Event App! Confirm your Email',
