@@ -33,8 +33,6 @@ export class AuthService {
       // 15 min
       club.expiresAt = new Date(Date.now() + 900000);
 
-      console.log(club);
-
       await club.save();
       // send verification code via email
       await this.mailService.sendUserCode(club, verificationCode);
