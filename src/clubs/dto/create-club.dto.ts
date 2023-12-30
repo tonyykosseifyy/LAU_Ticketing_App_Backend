@@ -26,10 +26,9 @@ export class CreateClubDto {
   @IsNotEmpty()
   password: string;
 
-  @IsOptional()
   @IsString()
   @MaxLength(80)
   @IsEmail({}, { message: 'Invalid email format' })
-  @Matches(/@lau\.edu$/, { message: 'Email must end with @lau.edu' })
+  @Matches(/@lau\.edu$/, { message: 'Only LAU emails are accepted' })
   readonly email: string;
 }

@@ -79,12 +79,7 @@ export class EventsService {
         } catch (error) {
             throw new NotFoundException(`Error creating event: ${error}`);
         }
-
-
+        
         return newEvent;
     }
-
-    
-    
-
 }

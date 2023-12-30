@@ -10,11 +10,17 @@ export class Club extends Document {
   @Prop({ required: true, minlength: 8, maxlength: 200 })
   password: string;
 
-  @Prop({ minlength: 9, maxlength: 200 })
+  @Prop({ required: true, minlength: 9, maxlength: 200 })
   email: string;
 
-  @Prop({ default: true })
-  first_login: boolean;
+  @Prop({ length: 6 })
+  token: string;
+
+  @Prop()
+  expiresAt: Date;
+
+  @Prop({ default: false }) 
+  verified: boolean 
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Event' }], default: [] })
   events: Types.ObjectId[];

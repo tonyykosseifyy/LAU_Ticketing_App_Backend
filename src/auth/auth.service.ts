@@ -7,8 +7,8 @@ import { Request } from 'express';
 export class AuthService {
   constructor(private readonly clubsService: ClubsService) {}
 
-  async validateClub(username: string, password: string): Promise<any> {
-    const club = await this.clubsService.getClub(username);
+  async validateClub(name: string, password: string): Promise<any> {
+    const club = await this.clubsService.getClub(name);
     if (!club)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
 

@@ -5,6 +5,8 @@ export interface IClub extends Document {
     readonly name: string;
     readonly password: string;
     readonly email: string;
-    readonly first_login: boolean;
+    readonly verified: boolean;
+    readonly token: string ;
+    readonly expiresAt: Date;
     readonly events: string[];
 }
