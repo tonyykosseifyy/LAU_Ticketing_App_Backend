@@ -10,6 +10,7 @@ import {
 export class CreateClubDto {
   @IsString()
   @MaxLength(80)
+  @MinLength(3)
   @IsNotEmpty()
   readonly name: string;
 

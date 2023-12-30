@@ -4,11 +4,12 @@ import {
     Post,
     Req,
     UseGuards,
-  } from '@nestjs/common';
-  import { AuthService } from './auth.service';
-  import { LocalGuard } from './local.auth.guard';
-  import { Request } from 'express';
-  import { AuthenticatedGuard } from '../auth/authenticated.guard';
+    Body
+} from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { LocalGuard } from './local.auth.guard';
+import { Request } from 'express';
+import { VerifyDto } from './dto/verify-code.dto';
 
   @Controller('auth')
   export class AuthController {
@@ -25,10 +26,14 @@ import {
       return this.authService.login();
     }
 
-    @UseGuards(AuthenticatedGuard)
     @Get('me')
     getMe(@Req() request: Request): any {
       return request.user;
+    }
+
+    @Post('/verify')
+    verify(@Body() verifyDto: VerifyDto, @Req() req: Request): Promise<any> {
+      return this.authService.verify(verifyDto, req);
     }
   
   }

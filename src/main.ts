@@ -25,7 +25,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // app.useGlobalGuards(new AuthenticatedGuard());
+  app.useGlobalGuards(new AuthenticatedGuard());
 
   await app.listen(3000);
 }
