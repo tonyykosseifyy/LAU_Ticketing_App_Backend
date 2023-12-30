@@ -22,7 +22,8 @@ export class ClubsService {
         club.password = hashedPassword;
 
         const newClub = new this.clubModel(club);
-        return await newClub.save();
+        await newClub.save();
+        return newClub;
     }
 
     async delete(id: string): Promise<IClub> {
