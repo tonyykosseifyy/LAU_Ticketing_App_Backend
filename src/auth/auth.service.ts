@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
 import { ClubsService } from '../clubs/clubs.service';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
+const otpGenerator = require( 'otp-generator');
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,21 @@ export class AuthService {
     );
     if (!passwordMatch)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
+    
+    if(!club.verified) {
+      // generate verification code
+      const verificationCode = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
+
+      club.code = verificationCode;
+      // 15 min
+      club.expiresAt = new Date(Date.now() + 900000);
+
+      console.log(club);
+
+      await club.save();
+      throw new HttpException('Please verify your email', HttpStatus.BAD_REQUEST);
+      // send verification code via email
+    }
 
     return {
       club

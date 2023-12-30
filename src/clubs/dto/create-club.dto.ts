@@ -4,8 +4,7 @@ import {
   MaxLength,
   MinLength,
   IsEmail,
-  Matches,
-  IsOptional
+  Matches
 } from 'class-validator';
 
 export class CreateClubDto {

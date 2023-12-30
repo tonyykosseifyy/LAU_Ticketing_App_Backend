@@ -14,7 +14,7 @@ export class Club extends Document {
   email: string;
 
   @Prop({ length: 6 })
-  token: string;
+  code: string;
 
   @Prop()
   expiresAt: Date;

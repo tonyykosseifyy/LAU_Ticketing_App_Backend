@@ -5,9 +5,10 @@ import { ClubsModule } from '../clubs/clubs.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 import { Session } from './session.serializer';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [ClubsModule, PassportModule.register({ session: true })],
+  imports: [ClubsModule, PassportModule.register({ session: true }), MailModule],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, Session],
 })
