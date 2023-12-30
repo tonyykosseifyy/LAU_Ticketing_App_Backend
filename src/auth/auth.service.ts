@@ -40,17 +40,18 @@ export class AuthService {
     club.expiresAt = null;
     await club.save();
     
-    req.login(club, (err) => {
-      if (err) {
-          throw new HttpException('Login failed', HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+    // generate a session cookie 
+    return new Promise((resolve, reject) => {
+      req.login(club, (err) => {
+        if (err) {
+          reject(err);
+        }
+        resolve({
+          message: 'Verification successful',
+          statusCode: HttpStatus.OK,
+        });
+      });
     });
-
-
-    return {
-      message: 'Verification successful',
-      statusCode: HttpStatus.OK,
-    };
   }
 
   async validateClub(name: string, password: string): Promise<any> {
