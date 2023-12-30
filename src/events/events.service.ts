@@ -13,8 +13,11 @@ export class EventsService {
     ) {}
 
     async getClubEvents(clubId: string): Promise<IEvent[]> {
-        const club = await this.clubModel.findById(clubId).populate('events');
-
+        const club = await this.clubModel.findById(clubId).populate({
+            path: 'events',
+            model: 'Event'
+        });
+        
         if (!club) {
             throw new NotFoundException(`Club with ID ${clubId} not found`);
         }
