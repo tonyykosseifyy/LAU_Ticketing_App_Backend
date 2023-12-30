@@ -4,7 +4,6 @@ import { Model, isValidObjectId } from 'mongoose';
 import { IClub } from './interface/club.interface';
 import { CreateClubDto } from './dto/create-club.dto';
 import * as bcrypt from 'bcrypt';
-import { Exception } from 'handlebars';
 
 @Injectable()
 export class ClubsService {
