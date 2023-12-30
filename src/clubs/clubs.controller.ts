@@ -30,7 +30,6 @@ export class ClubsController {
                 newClub
             });
           } catch (err) {
-            console.log(err);
             return response.status(err.status).json({
                 status: err.status,
                 message: err.message
