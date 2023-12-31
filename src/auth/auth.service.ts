@@ -11,7 +11,7 @@ const otpGenerator = require('otp-generator');
 export class AuthService {
   constructor(
     private readonly clubsService: ClubsService,
-    private readonly mailService: MailService,
+    private readonly mailService: MailService
   ) {}
 
   async forgotPassword(forgotPasswordReqDto: ForgotPasswordReqDto) {
