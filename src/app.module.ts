@@ -16,8 +16,6 @@ import { MailModule } from './mail/mail.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(`mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0.0gnozrq.mongodb.net/?retryWrites=true&w=majority`,{dbName: 'LAU_EVENTS'}),
-    MongooseModule.forFeature([{ name: 'Club', schema: ClubSchema }]),
-    MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]),
     ClubsModule,
     AuthModule,
     EventsModule,
