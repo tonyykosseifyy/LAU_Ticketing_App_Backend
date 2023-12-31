@@ -3,9 +3,7 @@ import { ClubsService } from '../clubs/clubs.service';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { MailService } from '../mail/mail.service';
-import { VerifyDto } from './dto/verify-code.dto';
-import { ForgotPasswordReqDto } from './dto/forgot-pass-req.dto';
-import { ResetPasswordDto } from './dto/reset-pass.dto';
+import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
 
 const otpGenerator = require('otp-generator');
 

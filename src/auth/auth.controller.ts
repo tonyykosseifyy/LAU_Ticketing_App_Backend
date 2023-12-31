@@ -2,9 +2,7 @@ import { Controller, Get, Post, Req, UseGuards, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalGuard } from './local.auth.guard';
 import { Request } from 'express';
-import { VerifyDto } from './dto/verify-code.dto';
-import { ForgotPasswordReqDto } from './dto/forgot-pass-req.dto';
-import { ResetPasswordDto } from './dto/reset-pass.dto';
+import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
 
 @Controller('auth')
 export class AuthController {
