@@ -6,7 +6,7 @@ import { IClub } from 'src/clubs/interface/club.interface';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendUserCode(club: IClub, code: string) {
+  async sendEmailVerification(club: IClub, code: string) {
     await this.mailerService.sendMail({
       to: club.email,
       subject: 'Welcome to LAU Event App! Confirm your Email',
@@ -21,7 +21,7 @@ export class MailService {
   async sendResetPassword(club: IClub, code: string) {
     await this.mailerService.sendMail({
       to: club.email,
-      subject: 'Reset your password',
+      subject: 'Password Reset Request',
       template: './reset-password', 
       context: { 
         name: club.name,
