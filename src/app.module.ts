@@ -4,10 +4,8 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { ClubsModule } from './clubs/clubs.module';
-import { ClubSchema } from './clubs/schemas/club.schema';
 import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
-import { EventSchema } from './events/schemas/event.schema';
 import { MailModule } from './mail/mail.module';
 
 @Module({
