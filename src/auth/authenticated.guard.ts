@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 const authRoutes = (request: any) : boolean => {
-  if ((['/auth/verify', '/auth/login'].includes(request.route.path)) && request.route.methods.post ) {
+  if ((['/auth/verify', '/auth/login', '/auth/forgot-password', '/auth/reset-password'].includes(request.route.path)) && request.route.methods.post ) {
     return true; 
   }
 }

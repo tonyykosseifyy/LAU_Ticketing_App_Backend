@@ -17,4 +17,16 @@ export class MailService {
       },
     });
   }
+
+  async sendResetPassword(club: IClub, code: string) {
+    await this.mailerService.sendMail({
+      to: club.email,
+      subject: 'Reset your password',
+      template: './confirmation', 
+      context: { 
+        name: club.name,
+        code,
+      },
+    });
+  }
 }

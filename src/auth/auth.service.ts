@@ -4,17 +4,80 @@ import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { MailService } from '../mail/mail.service';
 import { VerifyDto } from './dto/verify-code.dto';
+import { ForgotPasswordReqDto } from './dto/forgot-pass-req.dto';
+import { ResetPasswordDto } from './dto/reset-pass.dto';
 
-const otpGenerator = require( 'otp-generator');
+const otpGenerator = require('otp-generator');
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly clubsService: ClubsService,
-    private readonly mailService: MailService  
+    private readonly mailService: MailService,
   ) {}
 
-  async verify(verifyDto: VerifyDto, req ) {
+  async forgotPassword(forgotPasswordReqDto: ForgotPasswordReqDto) {
+    const { name, email } = forgotPasswordReqDto;
+    const club = await this.clubsService.getClub(name);
+    if (!club)
+      throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
+
+    if (club.email !== email) {
+      throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
+    }
+
+    // generate verification code
+    const verificationCode = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+      lowerCaseAlphabets: false,
+    });
+
+    // hash verification code
+    const hash = await bcrypt.hash(verificationCode, 10);
+
+    club.code = hash;
+    // 15 min
+    club.expiresAt = new Date(Date.now() + 900000);
+
+    try {
+      await club.save();
+      // send verification code via email
+      await this.mailService.sendResetPassword(club, verificationCode);
+    } catch(err) {
+      throw new HttpException('Error sending email', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { name, code, password } = resetPasswordDto;
+
+    const club = await this.clubsService.getClub(name);
+    if (!club)
+      throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
+
+    const codeMatch: boolean = await bcrypt.compare(code, club.code);
+    if (!codeMatch)
+      throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
+
+    if (club.expiresAt < new Date(Date.now())) {
+      throw new HttpException('Code expired', HttpStatus.BAD_REQUEST);
+    }
+    const newPassword = await bcrypt.hash(password, 10);
+
+    club.verified = true;
+    club.password = newPassword;
+    club.code = null;
+    club.expiresAt = null;
+
+    await club.save();
+
+    return {
+      message: 'Password reset successful',
+      statusCode: HttpStatus.OK,
+    };
+  }
+
+  async verify(verifyDto: VerifyDto, req) {
     const { name, code, password } = verifyDto;
 
     const club = await this.clubsService.getClub(name);
@@ -29,20 +92,20 @@ export class AuthService {
     const codeMatch: boolean = await bcrypt.compare(code, club.code);
     if (!codeMatch)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
-    
+
     if (club.expiresAt < new Date(Date.now())) {
       throw new HttpException('Code expired', HttpStatus.BAD_REQUEST);
     }
     const newPassword = await bcrypt.hash(password, 10);
 
     club.verified = true;
-    club.password = newPassword ;
+    club.password = newPassword;
     club.code = null;
     club.expiresAt = null;
-    
+
     await club.save();
-    
-    // generate a session cookie 
+
+    // generate a session cookie
     return new Promise((resolve, reject) => {
       req.login(club, (err) => {
         if (err) {
@@ -67,10 +130,14 @@ export class AuthService {
     );
     if (!passwordMatch)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
-    
-    if(!club.verified) {
+
+    if (!club.verified) {
       // generate verification code
-      const verificationCode = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
+      const verificationCode = otpGenerator.generate(6, {
+        upperCaseAlphabets: false,
+        specialChars: false,
+        lowerCaseAlphabets: false,
+      });
 
       // hash verification code
       const hash = await bcrypt.hash(verificationCode, 10);
@@ -78,19 +145,19 @@ export class AuthService {
       club.code = hash;
       // 15 min
       club.expiresAt = new Date(Date.now() + 900000);
-      
+
       await club.save();
       // send verification code via email
       await this.mailService.sendUserCode(club, verificationCode);
 
       throw new HttpException(
-        'A 6-digit verification code has been sent to your email. Please check your email for verification.', 
-        HttpStatus.BAD_REQUEST
+        'A 6-digit verification code has been sent to your email. Please check your email for verification.',
+        HttpStatus.BAD_REQUEST,
       );
     }
 
     return {
-      club
+      club,
     };
   }
 
