@@ -13,12 +13,14 @@ import { MailModule } from './mail/mail.module';
   providers: [AppService],
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    MongooseModule.forRoot(`mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0.0gnozrq.mongodb.net/?retryWrites=true&w=majority`,{dbName: 'LAU_EVENTS'}),
+    MongooseModule.forRoot(
+      `mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0.0gnozrq.mongodb.net/?retryWrites=true&w=majority`,
+      { dbName: 'LAU_EVENTS' },
+    ),
     ClubsModule,
     AuthModule,
     EventsModule,
-    MailModule  
+    MailModule,
   ],
 })
-
 export class AppModule {}
