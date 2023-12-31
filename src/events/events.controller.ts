@@ -1,6 +1,6 @@
 import { Body, Controller } from '@nestjs/common';
 import { EventsService } from './events.service';
-import { Get, Req, Res, Post, Put } from '@nestjs/common';
+import { Get, Req, Res, Post } from '@nestjs/common';
 import { AuthenticatedRequest } from '../interface/request.interface';
 import { CreateEventDto } from './dto/create-event.dto';
 
@@ -45,12 +45,4 @@ export class EventsController {
       });
     }
   }
-  @Put('/:id')
-  async updateEvent(
-    @Req() request: AuthenticatedRequest,
-    @Body() createEventDto: CreateEventDto,
-  ) {
-    
-  }
-
 }

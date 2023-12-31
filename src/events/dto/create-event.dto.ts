@@ -8,7 +8,6 @@ import { IsBeforeConstraint } from './constraints';
 
 
 export class CreateEventDto {
-
     @IsString()
     @Length(3, 200, { message: 'Name must be between 3 and 200 characters long' })
     readonly name: string;
