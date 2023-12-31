@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException, HttpException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
 import { IClub } from './interface/club.interface';

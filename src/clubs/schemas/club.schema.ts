@@ -24,7 +24,6 @@ export class Club extends Document {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Event' }], default: [] })
   events: Types.ObjectId[];
-  
 }
 
 export const ClubSchema = SchemaFactory.createForClass(Club);
