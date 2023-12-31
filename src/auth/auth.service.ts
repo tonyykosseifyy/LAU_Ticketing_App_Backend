@@ -15,7 +15,7 @@ export class AuthService {
   ) {}
 
   async verify(verifyDto: VerifyDto, req ) {
-    const { name, code } = verifyDto;
+    const { name, code, password } = verifyDto;
 
     const club = await this.clubsService.getClub(name);
 
@@ -33,10 +33,13 @@ export class AuthService {
     if (club.expiresAt < new Date(Date.now())) {
       throw new HttpException('Code expired', HttpStatus.BAD_REQUEST);
     }
+    const newPassword = await bcrypt.hash(password, 10);
 
     club.verified = true;
+    club.password = newPassword ;
     club.code = null;
     club.expiresAt = null;
+    
     await club.save();
     
     // generate a session cookie 
