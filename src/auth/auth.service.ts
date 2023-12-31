@@ -44,6 +44,10 @@ export class AuthService {
       await club.save();
       // send verification code via email
       await this.mailService.sendResetPassword(club, verificationCode);
+      return {
+        message: 'An email has been sent to you with a 6-digit code for password reset',
+        statusCode: HttpStatus.OK,
+      };
     } catch(err) {
       throw new HttpException('Error sending email', HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -54,6 +58,10 @@ export class AuthService {
     const club = await this.clubsService.getClub(name);
     if (!club)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
+
+    if (!club.code || !club.expiresAt) {
+      throw new HttpException('Please go to forgot password first', HttpStatus.BAD_REQUEST);
+    }
 
     const codeMatch: boolean = await bcrypt.compare(code, club.code);
     if (!codeMatch)

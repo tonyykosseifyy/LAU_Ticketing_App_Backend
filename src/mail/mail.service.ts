@@ -22,7 +22,7 @@ export class MailService {
     await this.mailerService.sendMail({
       to: club.email,
       subject: 'Reset your password',
-      template: './confirmation', 
+      template: './reset-password', 
       context: { 
         name: club.name,
         code,
