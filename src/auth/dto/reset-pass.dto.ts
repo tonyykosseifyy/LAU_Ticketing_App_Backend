@@ -1,4 +1,3 @@
-// name: string, password: string, code: string
 import {
   IsNotEmpty,
   IsString,
