@@ -19,6 +19,7 @@ export class AuthService {
   async forgotPassword(forgotPasswordReqDto: ForgotPasswordReqDto) {
     const { name, email } = forgotPasswordReqDto;
     const club = await this.clubsService.getClub(name);
+
     if (!club)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
 
@@ -95,6 +96,9 @@ export class AuthService {
 
     if (club.verified) {
       throw new HttpException('Already verified', HttpStatus.BAD_REQUEST);
+    }
+    if (!club.code || !club.expiresAt) {
+      throw new HttpException('Please login first', HttpStatus.BAD_REQUEST);
     }
 
     const codeMatch: boolean = await bcrypt.compare(code, club.code);
