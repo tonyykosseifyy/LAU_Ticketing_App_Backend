@@ -5,7 +5,6 @@ import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import { EventSchema } from './schemas/event.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Connection } from 'mongoose';
-import { NotFoundException } from '@nestjs/common';
 
 describe('EventsService', () => {
   let service: EventsService;
@@ -60,6 +59,7 @@ describe('EventsService', () => {
   });
   
 
+  
   afterAll(async () => {
     await dbConnection.close();
   });
