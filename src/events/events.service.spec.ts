@@ -5,6 +5,7 @@ import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import { EventSchema } from './schemas/event.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Connection } from 'mongoose';
+import { NotFoundException } from '@nestjs/common';
 
 describe('EventsService', () => {
   let service: EventsService;
@@ -36,7 +37,7 @@ describe('EventsService', () => {
     clubModel = module.get('ClubModel'); 
   });
 
-  it('should return events for an existing club', async () => {
+  it('GET club events: should return events for an existing club', async () => {
     const randomClub = await clubModel.findOne({});
     expect(randomClub).toBeDefined();
 
@@ -47,17 +48,17 @@ describe('EventsService', () => {
     }
   });
 
-  it('should throw an error for a new club id', async () => {
+  it('GET club events: should throw an error for an invalid club', async () => {
     const newClub = new clubModel({
       name: 'test',
       description: 'test',
       email: 'test@gmail.com',
     });
     // Note: newClub is not saved, so _id is not valid in the database
-
     expect.assertions(1);
-    await expect(service.getClubEvents(newClub._id.toString())).rejects.toThrow();
+    return service.getClubEvents(newClub._id.toString()).catch(error => expect(error.status).toBe(404));
   });
+  
 
   afterAll(async () => {
     await dbConnection.close();
