@@ -7,6 +7,8 @@ import { ClubsModule } from './clubs/clubs.module';
 import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
 import { MailModule } from './mail/mail.module';
+import { ScansModule } from './scans/scans.module';
+import { StudentsModule } from './students/students.module';
 
 @Module({
   controllers: [AppController],
@@ -21,6 +23,8 @@ import { MailModule } from './mail/mail.module';
     AuthModule,
     EventsModule,
     MailModule,
+    ScansModule,
+    StudentsModule,
   ],
 })
 export class AppModule {}

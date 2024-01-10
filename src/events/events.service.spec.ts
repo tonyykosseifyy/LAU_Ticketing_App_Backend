@@ -5,8 +5,9 @@ import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import { EventSchema } from './schemas/event.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Connection } from 'mongoose';
+import { CreateEventDto } from './dto/create-event.dto';
 
-describe('EventsService', () => {
+describe('EventsService - GET club events', () => {
   let service: EventsService;
   let dbConnection: Connection;
   let clubModel;
@@ -36,7 +37,7 @@ describe('EventsService', () => {
     clubModel = module.get('ClubModel'); 
   });
 
-  it('GET club events: should return events for an existing club', async () => {
+  it('should return events for an existing club', async () => {
     const randomClub = await clubModel.findOne({});
     expect(randomClub).toBeDefined();
 
@@ -47,7 +48,7 @@ describe('EventsService', () => {
     }
   });
 
-  it('GET club events: should throw an error for an invalid club', async () => {
+  it('should throw an error for an invalid club', async () => {
     const newClub = new clubModel({
       name: 'test',
       description: 'test',
@@ -64,3 +65,70 @@ describe('EventsService', () => {
     await dbConnection.close();
   });
 });
+
+
+
+// describe('EventsService - POST club event', () => {
+//   let service: EventsService;
+//   let mockClubModel;
+//   let mockEventModel;
+
+//   beforeEach(async () => {
+//     const module: TestingModule = await Test.createTestingModule({
+//       providers: [
+//         EventsService,
+//         {
+//           provide: 'EventModel',
+//           useValue: {
+//             findOne: jest.fn(),
+//             create: jest.fn().mockImplementation((dto) => dto),
+//           },
+//         },
+//         {
+//           provide: 'ClubModel',
+//           useValue: {
+//             findById: jest.fn().mockResolvedValue({ /* Mock club data */ }),
+//           },
+//         },
+//       ],
+//     }).compile();
+
+//     service = module.get<EventsService>(EventsService);
+//     mockEventModel = module.get('EventModel');
+//     mockClubModel = module.get('ClubModel');
+//   });
+
+//   it('should create an event for an existing club', async () => {
+//     const clubId = 'existing-club-id'; // Mock existing club ID
+//     const eventDto = {
+//       name: 'New Event',
+//       // ... other properties of the event ...
+//       clubs: [clubId],
+//     };
+
+//     // Setup mocks
+//     mockClubModel.findById.mockResolvedValue({ _id: clubId }); // Mock existing club
+//     mockEventModel.findOne.mockResolvedValue(null); // No existing event with the same name
+
+//     // Perform the test
+//     const createdEvent = await service.createEvent(eventDto);
+
+//     // Assertions
+//     expect(mockEventModel.findOne).toHaveBeenCalledWith({ name: { $regex: eventDto.name, $options: 'i' } });
+//     expect(mockClubModel.findById).toHaveBeenCalledWith(clubId);
+//     expect(createdEvent).toBeDefined();
+//     expect(createdEvent.clubs).toContain(clubId);
+//   });
+
+//   it('should throw an error as name is already taken', () => {
+//     mockEventModel.findOne.mockResolvedValue({ 
+//       start_date: '2021-01-01'
+//     }); // event exist
+            
+//     const event = new CreateEventDto();
+//     expect.assertions(1);
+//     // return service.getClubEvents(service.createEvent(event)).catch(error => expect(error.status).toBe(404));
+//   })
+// });
+
+
