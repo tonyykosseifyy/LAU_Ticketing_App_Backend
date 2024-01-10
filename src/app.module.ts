@@ -7,7 +7,6 @@ import { ClubsModule } from './clubs/clubs.module';
 import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
 import { MailModule } from './mail/mail.module';
-import { ScansModule } from './scans/scans.module';
 import { StudentsModule } from './students/students.module';
 
 @Module({
@@ -23,8 +22,7 @@ import { StudentsModule } from './students/students.module';
     AuthModule,
     EventsModule,
     MailModule,
-    ScansModule,
-    StudentsModule,
+    StudentsModule
   ],
 })
 export class AppModule {}
