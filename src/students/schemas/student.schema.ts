@@ -8,6 +8,9 @@ export class Student extends Document {
 
   @Prop({ required: true, minlength: 3, maxlength: 80 })
   name: string;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Event' }], default: []})
+  attendedEvents: Types.ObjectId[];
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);
