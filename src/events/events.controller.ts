@@ -15,7 +15,7 @@ export class EventsController {
     try {
       const events = await this.eventsService.getClubEvents(club._id);
       return response.status(200).send({
-        events
+        events,
       });
     } catch (err) {
       return response.status(err.status).json({
@@ -26,10 +26,14 @@ export class EventsController {
   }
 
   @Post()
-  async createEvent(@Req() request: AuthenticatedRequest, @Body() createEventDto:CreateEventDto, @Res() response) {
+  async createEvent(
+    @Req() request: AuthenticatedRequest,
+    @Body() createEventDto: CreateEventDto,
+    @Res() response,
+  ) {
     const { club } = request.user;
     if (!createEventDto.clubs) {
-        createEventDto.clubs = [];
+      createEventDto.clubs = [];
     }
     createEventDto.clubs.push(club._id);
 
@@ -47,16 +51,34 @@ export class EventsController {
     }
   }
   @Post(':id/scan')
-  async scanEvent( 
-    @Body() scanEventDto: ScanEventDto, 
+  async scanEvent(
+    @Body() scanEventDto: ScanEventDto,
     @Res() response,
     @Param('id', IsValidMongoIdPipe) eventId: string,
-  ) {    
+  ) {
     try {
       await this.eventsService.scanEvent(scanEventDto, eventId);
 
       return response.status(201).json({
-        message: 'User has been registered successfully'
+        message: 'User has been registered successfully',
+      });
+    } catch (err) {
+      return response.status(err.status).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+  }
+
+  @Get(':id/scan')
+  async getEventAttendees(
+    @Param('id', IsValidMongoIdPipe) eventId: string,
+    @Res() response,
+  ) {
+    try {
+      const attendees = await this.eventsService.getEventAttendees(eventId);
+      return response.status(200).json({
+        attendees,
       });
     } catch (err) {
       return response.status(err.status).json({

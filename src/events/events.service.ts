@@ -132,7 +132,8 @@ export class EventsService {
     async getEventAttendees(eventId: string): Promise<IStudent[]> {
         const event = await this.eventModel.findById(eventId).populate({
             path: 'attendees',
-            model: 'Student'
+            model: 'Student',
+            select: 'name student_id _id'
         });
         if (!event) {
             throw new NotFoundException(`Event with ID ${eventId} not found`);
