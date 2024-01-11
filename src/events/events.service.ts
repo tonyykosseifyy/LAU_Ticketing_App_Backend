@@ -2,14 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { IEvent } from './interface/event.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IClub } from 'src/clubs/interface/club.interface';
-import { CreateEventDto } from './dto/create-event.dto';
+import { IClub } from '../clubs/interface/club.interface';
+import { CreateEventDto, ScanEventDto } from './dto/index.dto';
+import { IStudent } from '../students/interface/student.interface';
 
 @Injectable()
 export class EventsService {
     constructor(
         @InjectModel('Event') private readonly eventModel: Model<IEvent>,
-        @InjectModel('Club') private readonly clubModel: Model<IClub> 
+        @InjectModel('Club') private readonly clubModel: Model<IClub>,
+        @InjectModel('Student') private readonly studentModel: Model<IStudent>
     ) {}
 
     async getClubEvents(clubId: string): Promise<IEvent[]> {
@@ -81,6 +83,79 @@ export class EventsService {
         }
         
         return newEvent;
+    }
+
+    async scanEvent(scanEventDto: ScanEventDto, eventId: string) {
+        const event = await this.eventModel.findById(eventId);
+        if( !event ) {
+            throw new NotFoundException(`Event with ID ${eventId} not found`);
+        }
+        const { student_id, name } = scanEventDto;
+        
+        const student = await this.studentModel.findOne({ student_id });
+        // if student is not in database and name not provided
+        if ( !student && !name ) {
+            throw new NotFoundException(`Student with ID ${student_id} not found, Please provide a name`);
+        }
+
+        // if student not in database but name is provided
+        if ( !student && name ) {
+            const newStudent = new this.studentModel({ student_id, name });
+            await newStudent.save();
+        }
+
+        await this.registerStudent(scanEventDto, eventId);
+        return { student, event };
+    }
+
+    async registerStudent(scanEventDto: ScanEventDto, eventId: string) {
+        // student and event in database
+        
+        const { student_id  } = scanEventDto;
+
+        const student = await this.studentModel.findOne({ student_id }); 
+        const event = await this.eventModel.findById(eventId);
+
+        if ( student.attendedEvents.includes(eventId) ) {
+            throw new NotFoundException(`Student with ID ${student_id} already registered for this event`);
+        }
+        if ( !student.attendedEvents.includes(eventId) ) {
+            student.attendedEvents.push(eventId);
+            await student.save();
+        }
+        if ( !event.attendees.includes(student._id) ) {
+            event.attendees.push(student._id);
+            await event.save();
+        }
+
+    }
+
+    async getEventAttendees(eventId: string): Promise<IStudent[]> {
+        const event = await this.eventModel.findById(eventId).populate({
+            path: 'attendees',
+            model: 'Student'
+        });
+        if (!event) {
+            throw new NotFoundException(`Event with ID ${eventId} not found`);
+        }
+        return event.attendees as unknown[] as IStudent[];
+    }
+
+    async getEventById(eventId: string): Promise<IEvent> {
+        const event = await this.eventModel.findById(eventId);
+        if (!event) {
+            throw new NotFoundException(`Event with ID ${eventId} not found`);
+        }
+        return event;
+    }
+
+    async getEventsDashboard(): Promise<IEvent[]> {
+        const events = await this.eventModel.find().populate({
+            path: 'attendees',
+            model: 'Student'
+        });
+
+        return events;
     }
 }
 

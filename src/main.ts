@@ -14,7 +14,17 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   
   // allow cors for development
-  app.enableCors();
+  app.enableCors(
+    // origin everywhere
+    {
+      origin: "*",
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+      credentials: true,
+    }
+
+  );
 
   app.use(
     session({
@@ -29,6 +39,6 @@ async function bootstrap() {
 
   app.useGlobalGuards(new AuthenticatedGuard());
 
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();
