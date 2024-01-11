@@ -127,7 +127,6 @@ export class EventsService {
             event.attendees.push(student._id);
             await event.save();
         }
-
     }
 
     async getEventAttendees(eventId: string): Promise<IStudent[]> {

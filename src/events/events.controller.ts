@@ -47,17 +47,16 @@ export class EventsController {
     }
   }
   @Post(':id/scan')
-  // events/:id/scan
   async scanEvent( 
     @Body() scanEventDto: ScanEventDto, 
     @Res() response,
     @Param('id', IsValidMongoIdPipe) eventId: string,
   ) {    
     try {
-      const scan = await this.eventsService.scanEvent(scanEventDto, eventId);
+      await this.eventsService.scanEvent(scanEventDto, eventId);
+
       return response.status(201).json({
-        message: 'User has been registered successfully',
-        scan
+        message: 'User has been registered successfully'
       });
     } catch (err) {
       return response.status(err.status).json({
