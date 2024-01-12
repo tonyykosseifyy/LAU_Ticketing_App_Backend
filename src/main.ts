@@ -5,6 +5,7 @@ import * as session from "express-session"
 import * as passport from "passport"
 import { ConfigService } from "@nestjs/config";
 import { AuthenticatedGuard } from './auth/authenticated.guard';
+import { ClubsService } from './clubs/clubs.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -36,7 +37,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.useGlobalGuards(new AuthenticatedGuard());
+  // app.useGlobalGuards(new AuthenticatedGuard());
   await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

@@ -53,5 +53,17 @@ export class ClubsService {
     async getClub(name: string): Promise<IClub> {
         return await this.clubModel.findOne({ name: { $regex: name , $options: 'i' } });
     }
+
+    async findById(id: string): Promise<IClub> {
+        if (!isValidObjectId(id)) {
+            throw new BadRequestException('Invalid ID format');
+        }
+        const club = await this.clubModel.findById(id);
+        if (!club) {
+            return null ;
+        }
+        return club;
+    }
+    
     
 }

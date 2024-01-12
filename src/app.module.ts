@@ -8,10 +8,12 @@ import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
 import { MailModule } from './mail/mail.module';
 import { StudentsModule } from './students/students.module';
+import { ClubsService } from './clubs/clubs.service';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthenticatedGuard } from './auth/authenticated.guard';
 
 @Module({
   controllers: [AppController],
-  providers: [AppService],
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(
@@ -24,5 +26,14 @@ import { StudentsModule } from './students/students.module';
     MailModule,
     StudentsModule
   ],
+  providers: [
+    AppService,
+    ClubsService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticatedGuard,
+    },
+  ],
+
 })
 export class AppModule {}

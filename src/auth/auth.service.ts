@@ -123,8 +123,7 @@ export class AuthService {
           reject(err);
         }
         resolve({
-          message: 'Verification successful',
-          statusCode: HttpStatus.OK,
+          club
         });
       });
     });
