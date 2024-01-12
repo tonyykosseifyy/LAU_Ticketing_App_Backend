@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { MailService } from '../mail/mail.service';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
+import { IClub } from 'src/clubs/interface/club.interface';
 
 const otpGenerator = require('otp-generator');
 
@@ -175,11 +176,9 @@ export class AuthService {
     return await bcrypt.compare(password, hash);
   }
 
-  async login() {
-    return {
-      message: 'Login successful',
-      statusCode: HttpStatus.OK,
-    };
+  async login(@Req() request: Request): Promise<IClub> {
+    const club = request.user;
+    return club as any as IClub;
   }
 
   async logout(@Req() request: Request): Promise<any> {
