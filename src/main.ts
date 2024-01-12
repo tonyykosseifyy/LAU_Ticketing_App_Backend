@@ -12,7 +12,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  
   // allow cors for development
   app.enableCors(
     // origin everywhere
@@ -38,7 +37,6 @@ async function bootstrap() {
   app.use(passport.session());
 
   app.useGlobalGuards(new AuthenticatedGuard());
-
   await app.listen(3000, '0.0.0.0');
 }
 bootstrap();
