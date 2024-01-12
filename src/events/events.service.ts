@@ -90,6 +90,16 @@ export class EventsService {
         if( !event ) {
             throw new NotFoundException(`Event with ID ${eventId} not found`);
         }
+        // check that the date now if between the start and end date of the event 
+        const now = new Date();
+        const startDate = new Date(event.start_date);
+        const endDate = new Date(event.end_date);
+        
+        if ( now < startDate || now > endDate ) {
+            throw new NotFoundException(`${event.name} event is not active`);
+        }
+
+
         const { student_id, name } = scanEventDto;
         
         const student = await this.studentModel.findOne({ student_id });
