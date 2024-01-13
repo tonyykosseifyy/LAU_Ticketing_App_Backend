@@ -162,7 +162,7 @@ export class AuthService {
 
       throw new HttpException(
         'A 6-digit verification code has been sent to your email. Please check your email for verification.',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.ACCEPTED,
       );
     }
 
