@@ -8,5 +8,11 @@ export interface IClub extends Document {
     verified: boolean;
     code: string ;
     expiresAt: Date;
-    readonly events: string[];
+    events: string[];
+}
+
+export interface IClubResponse {
+    readonly _id: string;
+    readonly name: string;
+    readonly email: string;
 }

@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { MailService } from '../mail/mail.service';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
-import { IClub } from 'src/clubs/interface/club.interface';
+import { IClub, IClubResponse } from 'src/clubs/interface/club.interface';
 import { AuthenticatedRequest, LoginRequest } from 'src/interface/request.interface';
 
 const otpGenerator = require('otp-generator');
@@ -86,7 +86,7 @@ export class AuthService {
     };
   }
 
-  async verify(verifyDto: VerifyDto, req) {
+  async verify(verifyDto: VerifyDto, req): Promise<IClubResponse> {
     const { name, code, password } = verifyDto;
 
     const club = await this.clubsService.getClub(name);
@@ -117,13 +117,18 @@ export class AuthService {
 
     await club.save();
 
+    let returned_club: IClubResponse = {
+      _id: club._id,
+      name: club.name,
+      email: club.email,
+    }
     // generate a session cookie
     return new Promise((resolve, reject) => {
       req.login(club, (err) => {
         if (err) {
           reject(err);
         }
-        resolve(club);
+        resolve(returned_club);
       });
     });
   }
@@ -174,9 +179,17 @@ export class AuthService {
     return await bcrypt.compare(password, hash);
   }
 
-  async login(@Req() request: LoginRequest): Promise<IClub> {
-    const { club } = request.user;
-    return club as any as IClub;
+  async login(@Req() request: LoginRequest): Promise<IClubResponse> {
+    let { club } = request.user;
+    // return club without code, expires at, password, events fields
+    
+    const returned_club: IClubResponse = {
+      _id: club._id,
+      name: club.name,
+      email: club.email,
+    }
+
+    return returned_club as any as IClubResponse;
   }
 
   async logout(@Req() request: Request): Promise<any> {

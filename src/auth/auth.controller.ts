@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LocalGuard } from './local.auth.guard';
 import { Request } from 'express';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
-import { IClub } from 'src/clubs/interface/club.interface';
+import { IClub, IClubResponse } from 'src/clubs/interface/club.interface';
 import { AuthenticatedRequest, LoginRequest } from '../interface/request.interface';
 
 @Controller('auth')
@@ -11,23 +11,29 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('logout')
-  logout(@Req() request: Request): Promise<any> {
+  logout(@Req() request: Request) {
     return this.authService.logout(request);
   }
 
   @UseGuards(LocalGuard)
   @Post('login')
-  login(@Req() request: LoginRequest): Promise<IClub> {
+  login(@Req() request: LoginRequest): Promise<IClubResponse> {
     return this.authService.login(request);
   }
 
   @Get('/me')
-  getMe(@Req() request: AuthenticatedRequest): any {
-    return request.user;
+  getMe(@Req() request: AuthenticatedRequest): IClubResponse {
+    const club = request.user;
+    const returned_club: IClubResponse = {
+      _id: club._id,
+      name: club.name,
+      email: club.email,
+    }
+    return returned_club;
   }
 
   @Post('/verify')
-  verify(@Body() verifyDto: VerifyDto, @Req() req: Request): Promise<any> {
+  verify(@Body() verifyDto: VerifyDto, @Req() req: Request): Promise<IClubResponse> {
     return this.authService.verify(verifyDto, req);
   }
 
