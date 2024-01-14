@@ -6,14 +6,15 @@ import { IClub } from '../clubs/interface/club.interface';
 import { CreateEventDto, ScanEventDto } from './dto/index.dto';
 import { IStudent } from '../students/interface/student.interface';
 import { CronJob } from 'cron';
-import path from 'path';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class EventsService {
     constructor(
         @InjectModel('Event') private readonly eventModel: Model<IEvent>,
         @InjectModel('Club') private readonly clubModel: Model<IClub>,
-        @InjectModel('Student') private readonly studentModel: Model<IStudent>
+        @InjectModel('Student') private readonly studentModel: Model<IStudent>,
+        private readonly mailService: MailService
     ) {}
 
 
@@ -109,6 +110,7 @@ export class EventsService {
             return;
         }
         console.log("cron job applied");
+        await this.mailService.sendEventData(event);
     }
     
       

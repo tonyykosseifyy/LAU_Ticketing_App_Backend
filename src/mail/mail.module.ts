@@ -19,7 +19,7 @@ import { ConfigService } from '@nestjs/config';
           },
         },
         defaults: {
-          from: `"No Reply" <${config.get('MAIL_FROM')}>`,
+          from: `"No Reply - LAU Events App" <${config.get('MAIL_FROM')}>`,
         },
         template: {
           dir: __dirname.slice(0, -8) + __dirname.slice(-4) + '/templates' ,
