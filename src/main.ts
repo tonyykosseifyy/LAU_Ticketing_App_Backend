@@ -4,8 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as session from "express-session"
 import * as passport from "passport"
 import { ConfigService } from "@nestjs/config";
-import { AuthenticatedGuard } from './auth/authenticated.guard';
-import { ClubsService } from './clubs/clubs.service';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

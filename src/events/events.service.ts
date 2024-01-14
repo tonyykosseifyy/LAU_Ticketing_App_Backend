@@ -5,6 +5,8 @@ import { Model } from 'mongoose';
 import { IClub } from '../clubs/interface/club.interface';
 import { CreateEventDto, ScanEventDto } from './dto/index.dto';
 import { IStudent } from '../students/interface/student.interface';
+import { CronJob } from 'cron';
+import path from 'path';
 
 @Injectable()
 export class EventsService {
@@ -13,6 +15,7 @@ export class EventsService {
         @InjectModel('Club') private readonly clubModel: Model<IClub>,
         @InjectModel('Student') private readonly studentModel: Model<IStudent>
     ) {}
+
 
     async getClubEvents(clubId: string): Promise<IEvent[]> {
         const club = await this.clubModel.findById(clubId).populate({
@@ -82,9 +85,33 @@ export class EventsService {
             throw new NotFoundException(`Error creating event: ${error}`);
         }
         
-        return newEvent;
-    }
+        // cron job 
+        this.scheduleEventEndTask(new Date(newEvent.start_date), newEvent._id);
 
+        return newEvent;
+    }  
+    scheduleEventEndTask(endDate: Date, eventId: string) {
+        const job = new CronJob(endDate, () => {
+          this.handleEventEnd(eventId);
+        });
+        job.start();
+      }
+    
+    private async handleEventEnd(eventId: string) {
+        // populate all atteendees for this event 
+        const event = await this.eventModel.findById(eventId).populate({
+            path: 'attendees',
+            model: 'Student',
+            select: 'name student_id'
+        });
+
+        if( !event ) {
+            return;
+        }
+        console.log("cron job applied");
+    }
+    
+      
     async scanEvent(scanEventDto: ScanEventDto, eventId: string) {
         const event = await this.eventModel.findById(eventId);
         if( !event ) {
@@ -98,7 +125,6 @@ export class EventsService {
         if ( now < startDate || now > endDate ) {
             throw new NotFoundException(`${event.name} event is not active`);
         }
-
 
         const { student_id, name } = scanEventDto;
         

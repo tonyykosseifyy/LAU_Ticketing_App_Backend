@@ -11,10 +11,13 @@ import { StudentsModule } from './students/students.module';
 import { ClubsService } from './clubs/clubs.service';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticatedGuard } from './auth/authenticated.guard';
+import { ScheduleModule } from '@nestjs/schedule';
+
 
 @Module({
   controllers: [AppController],
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(
       `mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0.0gnozrq.mongodb.net/?retryWrites=true&w=majority`,

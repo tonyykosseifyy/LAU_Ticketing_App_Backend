@@ -12,7 +12,6 @@ export class EventsController {
   @Get()
   async getClubEvents(@Req() request: AuthenticatedRequest, @Res() response) {
     const club = request.user;
-    console.log(club);
     try {
       const events = await this.eventsService.getClubEvents(club?._id);
       return response.status(200).send({
