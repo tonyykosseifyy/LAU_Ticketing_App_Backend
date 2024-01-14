@@ -4,7 +4,7 @@ import { LocalGuard } from './local.auth.guard';
 import { Request } from 'express';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
 import { IClub } from 'src/clubs/interface/club.interface';
-import { AuthenticatedRequest } from '../interface/request.interface';
+import { AuthenticatedRequest, LoginRequest } from '../interface/request.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -17,12 +17,12 @@ export class AuthController {
 
   @UseGuards(LocalGuard)
   @Post('login')
-  login(@Req() request: AuthenticatedRequest): Promise<IClub> {
+  login(@Req() request: LoginRequest): Promise<IClub> {
     return this.authService.login(request);
   }
 
   @Get('/me')
-  getMe(@Req() request: Request): any {
+  getMe(@Req() request: AuthenticatedRequest): any {
     return request.user;
   }
 

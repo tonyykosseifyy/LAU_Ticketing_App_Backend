@@ -11,15 +11,16 @@ export class EventsController {
 
   @Get()
   async getClubEvents(@Req() request: AuthenticatedRequest, @Res() response) {
-    const { club } = request.user;
+    const club = request.user;
+    console.log(club);
     try {
-      const events = await this.eventsService.getClubEvents(club._id);
+      const events = await this.eventsService.getClubEvents(club?._id);
       return response.status(200).send({
         events,
       });
     } catch (err) {
-      return response.status(err.status).json({
-        status: err.status,
+      return response.status(err?.status).json({
+        status: err?.status,
         message: err.message,
       });
     }
@@ -31,7 +32,7 @@ export class EventsController {
     @Body() createEventDto: CreateEventDto,
     @Res() response,
   ) {
-    const { club } = request.user;
+    const club = request.user;
     if (!createEventDto.clubs) {
       createEventDto.clubs = [];
     }

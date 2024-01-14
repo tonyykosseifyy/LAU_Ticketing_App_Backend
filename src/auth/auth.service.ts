@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { MailService } from '../mail/mail.service';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
 import { IClub } from 'src/clubs/interface/club.interface';
+import { AuthenticatedRequest, LoginRequest } from 'src/interface/request.interface';
 
 const otpGenerator = require('otp-generator');
 
@@ -122,9 +123,7 @@ export class AuthService {
         if (err) {
           reject(err);
         }
-        resolve({
-          club
-        });
+        resolve(club);
       });
     });
   }
@@ -175,8 +174,8 @@ export class AuthService {
     return await bcrypt.compare(password, hash);
   }
 
-  async login(@Req() request: Request): Promise<IClub> {
-    const club = request.user;
+  async login(@Req() request: LoginRequest): Promise<IClub> {
+    const { club } = request.user;
     return club as any as IClub;
   }
 
