@@ -1,7 +1,8 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { IClub } from 'src/clubs/interface/club.interface';
-import { IEvent } from 'src/events/interface/event.interface';
+import { EventDetailed } from 'src/events/interface/event-details';
+import { Attachment } from './interface/attachment';
 
 @Injectable()
 export class MailService {
@@ -30,7 +31,7 @@ export class MailService {
       },
     });
   }
-  async sendEventData(event: IEvent) {
+  async sendEventData(event: EventDetailed, attachment: Attachment) {
     await this.mailerService.sendMail({
       // Alan's email
       to: 'tony.elkosseify@lau.edu',
@@ -38,7 +39,11 @@ export class MailService {
       template: './event-data',
       context: {
         name: event.name,
+        start_date: event.start_date,
+        end_date: event.end_date,
+        attendee_count: event.attendees.length 
       },
+      attachments: [attachment]
     });
   }
 }

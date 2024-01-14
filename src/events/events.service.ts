@@ -7,6 +7,8 @@ import { CreateEventDto, ScanEventDto } from './dto/index.dto';
 import { IStudent } from '../students/interface/student.interface';
 import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';
+import { createEventExcelFile } from './utils/excel';
+import { EventDetailed } from './interface/event-details';
 
 @Injectable()
 export class EventsService {
@@ -110,8 +112,20 @@ export class EventsService {
             return;
         }
         console.log("cron job applied");
-        await this.mailService.sendEventData(event);
+        
+        await this.sendEventExcelByEmail(event as any as EventDetailed);
     }
+    async sendEventExcelByEmail(event: EventDetailed) {
+        const excelBuffer = await createEventExcelFile(event);
+        const attachment = {
+            filename: `EventData-${event.name}.xlsx`,
+            content: excelBuffer,
+            contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        };
+    
+        await this.mailService.sendEventData(event, attachment);
+    }
+    
     
       
     async scanEvent(scanEventDto: ScanEventDto, eventId: string) {
