@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Put } from '@nestjs/common';
 import { StudentsService } from './students.service';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Controller('students')
 export class StudentsController {
@@ -11,4 +12,8 @@ export class StudentsController {
         return students;
     }
 
+    @Put()
+    async updateStudent(@Body() updateStudentDto: UpdateStudentDto) {
+        return this.studentsService.updateStudent(updateStudentDto);
+    }
 }

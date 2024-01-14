@@ -19,5 +19,4 @@ export class Session extends PassportSerializer {
       (error) => done(error, null)
     );
   }
-  
 }
