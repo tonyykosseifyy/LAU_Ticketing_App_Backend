@@ -39,8 +39,8 @@ export class MailService {
       template: './event-data',
       context: {
         name: event.name,
-        start_date: event.start_date,
-        end_date: event.end_date,
+        start_date: new Date(event.start_date).toString().replace(/ GMT.*$/, ""),
+        end_date: new Date(event.end_date).toString().replace(/ GMT.*$/, ""),
         attendee_count: event.attendees.length 
       },
       attachments: [attachment]

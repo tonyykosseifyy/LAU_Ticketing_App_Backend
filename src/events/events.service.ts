@@ -89,7 +89,7 @@ export class EventsService {
         }
         
         // cron job 
-        this.scheduleEventEndTask(new Date(newEvent.start_date), newEvent._id);
+        this.scheduleEventEndTask(new Date(newEvent.end_date), newEvent._id);
 
         return newEvent;
     }  
@@ -111,7 +111,6 @@ export class EventsService {
         if( !event ) {
             return;
         }
-        console.log("cron job applied");
         
         await this.sendEventExcelByEmail(event as any as EventDetailed);
     }
