@@ -7,5 +7,8 @@ export interface IEvent extends Document {
     readonly start_date: Date;
     readonly end_date: Date;
     readonly clubs: string[];
-    readonly attendees: string[];
+}
+
+export interface IEventWithCount extends IEvent {
+    readonly attendee_count: number;
 }

@@ -6,9 +6,10 @@ import { EventSchema } from './schemas/event.schema';
 import { ClubsModule } from '../clubs/clubs.module';
 import { StudentsModule } from 'src/students/students.module';
 import { MailModule } from '../mail/mail.module';
+import { ScansModule } from 'src/scans/scans.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]), ClubsModule, StudentsModule, MailModule],
+  imports: [MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]), ClubsModule, StudentsModule, MailModule, ScansModule],
   providers: [EventsService],
   controllers: [EventsController],
   exports: [EventsService, MongooseModule]

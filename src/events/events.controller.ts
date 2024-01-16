@@ -12,7 +12,7 @@ export class EventsController {
   async getClubEvents(@Req() request: AuthenticatedRequest, @Res() response) {
     const club = request.user;
     try {
-      const events = await this.eventsService.getClubEvents(club?._id);
+      const events = await this.eventsService.getClubEvents(club._id);
       return response.status(200).send({
         events,
       });

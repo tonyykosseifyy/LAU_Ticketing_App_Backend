@@ -12,7 +12,6 @@ import { ClubsService } from './clubs/clubs.service';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticatedGuard } from './auth/authenticated.guard';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ScanModule } from './scan/scan.module';
 import { ScansModule } from './scans/scans.module';
 
 
@@ -30,16 +29,15 @@ import { ScansModule } from './scans/scans.module';
     EventsModule,
     MailModule,
     StudentsModule,
-    ScanModule,
     ScansModule
   ],
   providers: [
     AppService,
     ClubsService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthenticatedGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthenticatedGuard,
+    // },
   ],
 
 })

@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { IEvent } from './interface/event.interface';
+import { IEvent, IEventWithCount } from './interface/event.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IClub } from '../clubs/interface/club.interface';
 import { CreateEventDto } from './dto/index.dto';
-import { IStudent } from '../students/interface/student.interface';
 import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';
 import { createEventExcelFile } from './utils/excel';
@@ -15,7 +14,6 @@ export class EventsService {
     constructor(
         @InjectModel('Event') private readonly eventModel: Model<IEvent>,
         @InjectModel('Club') private readonly clubModel: Model<IClub>,
-        @InjectModel('Student') private readonly studentModel: Model<IStudent>,
         @InjectModel('Scan') private readonly scanModel: Model<any>,
         private readonly mailService: MailService
     ) {}
@@ -104,7 +102,8 @@ export class EventsService {
     private async handleEventEnd(eventId: string) {
         // get event
         const event: IEvent = await this.eventModel.findById(eventId);
-        if (!event) {
+        
+        if ( !event ) {
             return;
         }
         // get scans for this event
@@ -124,8 +123,13 @@ export class EventsService {
             content: excelBuffer,
             contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         };
-    
-        await this.mailService.sendEventData(event, attachment);
+        const eventData = event.toObject();
+        const data: IEventWithCount = {
+            ...eventData,
+            attendee_count: scans.length
+        };
+
+        await this.mailService.sendEventData(data, attachment);
     }
     
 

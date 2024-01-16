@@ -3,7 +3,7 @@ import {
     IsArray, IsMongoId, Validate, IsOptional
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsBeforeConstraint } from './constraints';
+import { IsBeforeConstraint, IsFutureDate } from './constraints';
 
 
 
@@ -22,6 +22,7 @@ export class CreateEventDto {
 
     @IsDate({ message: 'Start date must be a valid date' })
     @Type(() => Date)
+    @IsFutureDate({ message: 'Start date must be in the future' })
     readonly start_date: Date;
 
 

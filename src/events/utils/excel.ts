@@ -1,5 +1,4 @@
 import * as ExcelJS from 'exceljs';
-import { EventDetailed, Attendee } from '../interface/event-details'
 import { IScanDetailed } from '../../scans/interface/scan.interface';
 
 export async function createEventExcelFile(scans: IScanDetailed[]): Promise<ExcelJS.Buffer> {

@@ -26,9 +26,6 @@ export class Event extends Document {
 
 export const EventSchema = SchemaFactory.createForClass(Event);
 
-// Adding a unique compound index
-EventSchema.index({ name: 1, start_date: 1 }, { unique: true });
-
 
 // Pre-save middleware
 EventSchema.pre('save', function(next) {
