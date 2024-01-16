@@ -25,7 +25,7 @@ export class ScansService {
     const now = new Date();
     const startDate = new Date(event.start_date);
     const endDate = new Date(event.end_date);
-    console.log(3);
+
     if (now < startDate || now > endDate) {
       throw new NotFoundException(`${event.name} event is not active`);
     }
@@ -68,6 +68,7 @@ export class ScansService {
     if ( !event.clubs.includes(club._id) ) {
         throw new NotFoundException(`Club is not part of this event`);
     }
+    console.log(eventId) ;
     // get all scans of the event
     const scans: IScanDetailed[] = await this.scanModel.find({ event: eventId }).populate({
         path: 'student',

@@ -7,14 +7,14 @@ import { CreateEventDto } from './dto/index.dto';
 import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';
 import { createEventExcelFile } from './utils/excel';
-import { IScanDetailed } from '../scans/interface/scan.interface';
+import { IScan, IScanDetailed } from '../scans/interface/scan.interface';
 
 @Injectable()
 export class EventsService {
     constructor(
         @InjectModel('Event') private readonly eventModel: Model<IEvent>,
         @InjectModel('Club') private readonly clubModel: Model<IClub>,
-        @InjectModel('Scan') private readonly scanModel: Model<any>,
+        @InjectModel('Scan') private readonly scanModel: Model<IScan>,
         private readonly mailService: MailService
     ) {}
 
@@ -88,6 +88,7 @@ export class EventsService {
 
         return newEvent;
     }  
+    
     scheduleEventEndTask(endDate: Date, eventId: string) {
         const job = new CronJob(endDate, () => {
           this.handleEventEnd(eventId);
@@ -103,15 +104,17 @@ export class EventsService {
             return;
         }
         // get scans for this event
-        const scans: IScanDetailed[] = await this.scanModel.find({ event: eventId }).populate({
+        const eventIdString = eventId.toString();
+        const scans: IScanDetailed[] = await this.scanModel.find({ event: eventIdString }).populate({
             path: 'student',
             model: 'Student',
-            select: 'name student_id'
+            select: 'name student_id _id'
         });
         
         await this.sendEventExcelByEmail(event, scans);
     }
 
+    
     async sendEventExcelByEmail(event: IEvent, scans: IScanDetailed[]) {
         const excelBuffer = await createEventExcelFile(scans);
         const attachment = {
