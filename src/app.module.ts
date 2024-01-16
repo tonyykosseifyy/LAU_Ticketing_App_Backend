@@ -12,6 +12,8 @@ import { ClubsService } from './clubs/clubs.service';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticatedGuard } from './auth/authenticated.guard';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ScanModule } from './scan/scan.module';
+import { ScansModule } from './scans/scans.module';
 
 
 @Module({
@@ -27,7 +29,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     AuthModule,
     EventsModule,
     MailModule,
-    StudentsModule
+    StudentsModule,
+    ScanModule,
+    ScansModule
   ],
   providers: [
     AppService,
