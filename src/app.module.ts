@@ -34,10 +34,10 @@ import { ScansModule } from './scans/scans.module';
   providers: [
     AppService,
     ClubsService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthenticatedGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticatedGuard,
+    },
   ],
 
 })
