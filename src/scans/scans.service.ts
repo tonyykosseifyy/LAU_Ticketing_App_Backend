@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ScanEventDto } from './dto/scan-event.dto';
@@ -16,13 +16,11 @@ export class ScansService {
   ) {}
 
   
-  async scanEvent(scanEventDto: ScanEventDto, eventId: string) {
+  async scanEvent(scanEventDto: ScanEventDto, eventId: string): Promise<void> {
     const event = await this.eventModel.findById(eventId);
-    console.log(1);
     if (!event) {
       throw new NotFoundException(`Event with ID ${eventId} not found`);
     }
-    console.log(2);
     // check that the date now if between the start and end date of the event
     const now = new Date();
     const startDate = new Date(event.start_date);
@@ -33,33 +31,32 @@ export class ScansService {
     }
 
     const { student_id, name } = scanEventDto;
-    console.log(4);
-    const student = await this.studentModel.findOne({ student_id });
+    let student = await this.studentModel.findOne({ student_id });
     // if student is not in database and name not provided
-    console.log(5);
     if (!student && !name) {
       throw new NotFoundException(
         `Student with ID ${student_id} not found, Please provide a name`,
       );
     }
-    console.log(6);
     // if student not in database but name is provided
     if (!student && name) {
-      const newStudent = new this.studentModel({ student_id, name });
-      await newStudent.save();
+      student = new this.studentModel({ student_id, name });
+      await student.save();
     }
     // after student is present in database
-    console.log(7);
+
+    const oldScan = await this.scanModel.findOne({ student: student._id, event: eventId });
+    if (oldScan) {
+        throw new BadRequestException(`Student already scanned this event`);
+    }
+
     const scan = new this.scanModel({
         student: student._id,
         event: eventId,
         date: new Date()
     });
 
-
     await scan.save();
-    console.log(8);
-    return { student, event };
   } 
 
   async getEventAttendees(eventId: string, club: IClub): Promise<{student_id: number,name: string}[]> {

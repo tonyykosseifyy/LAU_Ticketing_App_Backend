@@ -35,11 +35,9 @@ export class EventsService {
     async createEvent(event: CreateEventDto): Promise<IEvent> {
         // check if the event name is already taken
         const oldEvent = await this.eventModel.findOne({ name: { $regex: event.name , $options: 'i' } });
-        console.log(1);
         if (oldEvent) {
             throw new BadRequestException(`${event.name} Event already exists`);
         }
-        console.log(2);
         // club_ids is an array of club IDs
         const club_ids = event.clubs ;
         
