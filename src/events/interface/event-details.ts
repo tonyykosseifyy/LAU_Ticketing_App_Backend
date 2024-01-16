@@ -1,6 +1,7 @@
 export interface Attendee {
     readonly student_id: number;
     readonly name: string;
+    readonly date: Date;
 }
 
 export interface EventDetailed {

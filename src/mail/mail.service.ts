@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { IClub } from 'src/clubs/interface/club.interface';
 import { EventDetailed } from 'src/events/interface/event-details';
 import { Attachment } from './interface/attachment';
+import { IEvent } from 'src/events/interface/event.interface';
 
 @Injectable()
 export class MailService {
@@ -31,7 +32,7 @@ export class MailService {
       },
     });
   }
-  async sendEventData(event: EventDetailed, attachment: Attachment) {
+  async sendEventData(event: IEvent, attachment: Attachment) {
     await this.mailerService.sendMail({
       // Alan's email
       to: 'tony.elkosseify@lau.edu',

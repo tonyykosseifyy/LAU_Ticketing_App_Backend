@@ -10,6 +10,7 @@ import { MailModule } from '../mail/mail.module';
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]), ClubsModule, StudentsModule, MailModule],
   providers: [EventsService],
-  controllers: [EventsController]
+  controllers: [EventsController],
+  exports: [EventsService, MongooseModule]
 })
 export class EventsModule {}

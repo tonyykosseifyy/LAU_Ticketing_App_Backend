@@ -3,12 +3,12 @@ import { IEvent } from './interface/event.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IClub } from '../clubs/interface/club.interface';
-import { CreateEventDto, ScanEventDto } from './dto/index.dto';
+import { CreateEventDto } from './dto/index.dto';
 import { IStudent } from '../students/interface/student.interface';
 import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';
 import { createEventExcelFile } from './utils/excel';
-import { EventDetailed } from './interface/event-details';
+import { IScanDetailed } from '../scans/interface/scan.interface';
 
 @Injectable()
 export class EventsService {
@@ -16,6 +16,7 @@ export class EventsService {
         @InjectModel('Event') private readonly eventModel: Model<IEvent>,
         @InjectModel('Club') private readonly clubModel: Model<IClub>,
         @InjectModel('Student') private readonly studentModel: Model<IStudent>,
+        @InjectModel('Scan') private readonly scanModel: Model<any>,
         private readonly mailService: MailService
     ) {}
 
@@ -101,21 +102,23 @@ export class EventsService {
       }
     
     private async handleEventEnd(eventId: string) {
-        // populate all atteendees for this event 
-        const event = await this.eventModel.findById(eventId).populate({
-            path: 'attendees',
+        // get event
+        const event: IEvent = await this.eventModel.findById(eventId);
+        if (!event) {
+            return;
+        }
+        // get scans for this event
+        const scans: IScanDetailed[] = await this.scanModel.find({ event: eventId }).populate({
+            path: 'student',
             model: 'Student',
             select: 'name student_id'
         });
-
-        if( !event ) {
-            return;
-        }
         
-        await this.sendEventExcelByEmail(event as any as EventDetailed);
+        await this.sendEventExcelByEmail(event, scans);
     }
-    async sendEventExcelByEmail(event: EventDetailed) {
-        const excelBuffer = await createEventExcelFile(event);
+
+    async sendEventExcelByEmail(event: IEvent, scans: IScanDetailed[]) {
+        const excelBuffer = await createEventExcelFile(scans);
         const attachment = {
             filename: `EventData-${event.name}.xlsx`,
             content: excelBuffer,
@@ -125,72 +128,6 @@ export class EventsService {
         await this.mailService.sendEventData(event, attachment);
     }
     
-    
-      
-    async scanEvent(scanEventDto: ScanEventDto, eventId: string) {
-        const event = await this.eventModel.findById(eventId);
-        if( !event ) {
-            throw new NotFoundException(`Event with ID ${eventId} not found`);
-        }
-        // check that the date now if between the start and end date of the event 
-        const now = new Date();
-        const startDate = new Date(event.start_date);
-        const endDate = new Date(event.end_date);
-        
-        if ( now < startDate || now > endDate ) {
-            throw new NotFoundException(`${event.name} event is not active`);
-        }
-
-        const { student_id, name } = scanEventDto;
-        
-        const student = await this.studentModel.findOne({ student_id });
-        // if student is not in database and name not provided
-        if ( !student && !name ) {
-            throw new NotFoundException(`Student with ID ${student_id} not found, Please provide a name`);
-        }
-
-        // if student not in database but name is provided
-        if ( !student && name ) {
-            const newStudent = new this.studentModel({ student_id, name });
-            await newStudent.save();
-        }
-
-        await this.registerStudent(scanEventDto, eventId);
-        return { student, event };
-    }
-
-    async registerStudent(scanEventDto: ScanEventDto, eventId: string) {
-        // student and event in database
-        
-        const { student_id  } = scanEventDto;
-
-        const student = await this.studentModel.findOne({ student_id }); 
-        const event = await this.eventModel.findById(eventId);
-
-        if ( student.attendedEvents.includes(eventId) ) {
-            throw new NotFoundException(`Student with ID ${student_id} already registered for this event`);
-        }
-        if ( !student.attendedEvents.includes(eventId) ) {
-            student.attendedEvents.push(eventId);
-            await student.save();
-        }
-        if ( !event.attendees.includes(student._id) ) {
-            event.attendees.push(student._id);
-            await event.save();
-        }
-    }
-
-    async getEventAttendees(eventId: string): Promise<IStudent[]> {
-        const event = await this.eventModel.findById(eventId).populate({
-            path: 'attendees',
-            model: 'Student',
-            select: 'name student_id _id'
-        });
-        if (!event) {
-            throw new NotFoundException(`Event with ID ${eventId} not found`);
-        }
-        return event.attendees as unknown[] as IStudent[];
-    }
 
     async getEventById(eventId: string): Promise<IEvent> {
         const event = await this.eventModel.findById(eventId);

@@ -2,8 +2,7 @@ import { Body, Controller, Param } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { Get, Req, Res, Post } from '@nestjs/common';
 import { AuthenticatedRequest } from '../interface/request.interface';
-import { CreateEventDto, ScanEventDto } from './dto/index.dto';
-import { IsValidMongoIdPipe } from './validation/event-id-pipe';
+import { CreateEventDto } from './dto/index.dto';
 
 @Controller('events')
 export class EventsController {
@@ -42,43 +41,6 @@ export class EventsController {
       return response.status(201).json({
         message: 'Event has been created successfully',
         newEvent,
-      });
-    } catch (err) {
-      return response.status(err.status).json({
-        status: err.status,
-        message: err.message,
-      });
-    }
-  }
-  @Post(':id/scan')
-  async scanEvent(
-    @Body() scanEventDto: ScanEventDto,
-    @Res() response,
-    @Param('id', IsValidMongoIdPipe) eventId: string,
-  ) {
-    try {
-      await this.eventsService.scanEvent(scanEventDto, eventId);
-
-      return response.status(201).json({
-        message: 'User has been registered successfully',
-      });
-    } catch (err) {
-      return response.status(err.status).json({
-        status: err.status,
-        message: err.message,
-      });
-    }
-  }
-
-  @Get(':id/scan')
-  async getEventAttendees(
-    @Param('id', IsValidMongoIdPipe) eventId: string,
-    @Res() response,
-  ) {
-    try {
-      const attendees = await this.eventsService.getEventAttendees(eventId);
-      return response.status(200).json({
-        attendees,
       });
     } catch (err) {
       return response.status(err.status).json({

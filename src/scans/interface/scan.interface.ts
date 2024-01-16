@@ -1,9 +1,18 @@
 import { Types } from 'mongoose';
 
-interface IScan {
+export interface IScan {
     event: Types.ObjectId;
     student: Types.ObjectId;
     date: Date;
 }
 
-export default IScan;
+export interface IScanDetailed {
+    event: Types.ObjectId;
+    student: {
+        student_id: number;
+        name: string;
+    };
+    date: Date;
+}
+
+
