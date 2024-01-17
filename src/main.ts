@@ -4,13 +4,18 @@ import { ValidationPipe } from '@nestjs/common';
 import * as session from "express-session"
 import * as passport from "passport"
 import { ConfigService } from "@nestjs/config";
+import * as moment from 'moment-timezone';
+
+// Set the default timezone
+// moment.tz.setDefault('Asia/Beirut');
+
 
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configService = app.get(ConfigService);
-
+  
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   // allow cors for development
   app.enableCors(
@@ -24,7 +29,7 @@ async function bootstrap() {
     }
 
   );
-
+    
   app.use(
     session({
       secret: configService.get("SESSION_SECRET"),

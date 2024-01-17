@@ -1214,6 +1214,11 @@
     "@types/mime" "*"
     "@types/node" "*"
 
+"@types/set-tz@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@types/set-tz/-/set-tz-0.2.2.tgz#c9610d0a4d7263692bc730c21d0275e9b5ef103d"
+  integrity sha512-h11sKwlSATFQ3FAHIzzLSfb3tV3+55XFyroR73aCz1+EZD5Pk/CsV/2MqIRDtMJ63Fo62q54t1KNRZGgf/Vf3w==
+
 "@types/stack-utils@^2.0.0":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.3.tgz#6209321eb2c1712a7e7466422b8cb1fc0d9dd5d8"
@@ -4938,6 +4943,18 @@ mkdirp@^1.0.3:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
+moment-timezone@^0.5.44:
+  version "0.5.44"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.44.tgz#a64a4e47b68a43deeab5ae4eb4f82da77cdf595f"
+  integrity sha512-nv3YpzI/8lkQn0U6RkLd+f0W/zy/JnoR5/EyPz/dNkPTBjA2jNLCVxaiQ8QpeLymhSZvX0wCL5s27NQWdOPwAw==
+  dependencies:
+    moment "^2.29.4"
+
+moment@^2.29.4:
+  version "2.30.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.30.1.tgz#f8c91c07b7a786e30c59926df530b4eac96974ae"
+  integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
+
 mongodb-connection-string-url@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/mongodb-connection-string-url/-/mongodb-connection-string-url-2.6.0.tgz#57901bf352372abdde812c81be47b75c6b2ec5cf"
@@ -5965,6 +5982,13 @@ set-function-length@^1.1.1:
     gopd "^1.0.1"
     has-property-descriptors "^1.0.0"
 
+set-tz@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/set-tz/-/set-tz-0.2.0.tgz#6b76a710aebda6808bc2ca39c4d4f243f597d21d"
+  integrity sha512-LDEBBYjFt57i83bqWN5MFpff++56Q7VfY/m0/GpSfF9BgmjqnLO3Izaf44PDC5dsUDPy4kx1ZV2QDtuBq7MP+g==
+  dependencies:
+    windows-iana "^3.0.0"
+
 setimmediate@^1.0.5, setimmediate@~1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
@@ -6784,6 +6808,11 @@ wide-align@^1.1.2:
   integrity sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==
   dependencies:
     string-width "^1.0.2 || 2 || 3 || 4"
+
+windows-iana@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/windows-iana/-/windows-iana-3.1.0.tgz#156b1d7faef085068383827ac2884f1656cff217"
+  integrity sha512-rCPf3AakAAgvapnbYVvG2bQyI3g6EDbPpjDJ72fdAu+XTzB1qvX4ZC6OnZ0I2+thaspjTb+8KwdyhdBl8Lt/QA==
 
 with@^7.0.0:
   version "7.0.2"

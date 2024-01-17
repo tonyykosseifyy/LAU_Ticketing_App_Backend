@@ -53,7 +53,7 @@ export class ScansService {
     const scan = new this.scanModel({
         student: student._id,
         event: eventId,
-        date: new Date()
+        date: now
     });
 
     await scan.save();
@@ -68,13 +68,14 @@ export class ScansService {
     if ( !event.clubs.includes(club._id) ) {
         throw new NotFoundException(`Club is not part of this event`);
     }
-    console.log(eventId) ;
+    
     // get all scans of the event
     const scans: IScanDetailed[] = await this.scanModel.find({ event: eventId }).populate({
         path: 'student',
         model: 'Student',
         select: 'name student_id _id'
     });
+
     if (!scans) {
         throw new NotFoundException(`No scans found for this ${event.name}} event`);
     }

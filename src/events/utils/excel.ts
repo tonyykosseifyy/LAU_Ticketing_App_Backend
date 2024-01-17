@@ -1,5 +1,8 @@
 import * as ExcelJS from 'exceljs';
 import { IScanDetailed } from '../../scans/interface/scan.interface';
+import { convertUtcToBeirutTime } from '../../common/date-utils';
+
+
 
 export async function createEventExcelFile(scans: IScanDetailed[]): Promise<ExcelJS.Buffer> {
     const workbook = new ExcelJS.Workbook();
@@ -11,16 +14,16 @@ export async function createEventExcelFile(scans: IScanDetailed[]): Promise<Exce
     attendeesSheet.columns = [
         { header: 'Student ID', key: 'student_id', width: 15 },
         { header: 'Name', key: 'name', width: 20 },
-        { header: 'Date', key: 'date', width: 20 }
+        { header: 'Date', key: 'date', width: 20, style: { numFmt: 'MM/dd/yy HH:mm:ss' } }
     ];
-
+    
     // Add rows for each attendee
     scans.forEach((scan: IScanDetailed) => {
         const attendee = {
             student_id: scan.student.student_id,
             name: scan.student.name,
-            date: scan.date 
-        }
+            date: convertUtcToBeirutTime(scan.date.toISOString())
+        };
         attendeesSheet.addRow(attendee);
     });
 
