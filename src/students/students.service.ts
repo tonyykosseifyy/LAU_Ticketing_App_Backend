@@ -21,9 +21,9 @@ export class StudentsService {
         return student;
     }
 
-    async updateStudent(updateStudentDto: UpdateStudentDto): Promise<any> {
-        const { student_id, name } = updateStudentDto ;
-
+    async updateStudent(updateStudentDto: UpdateStudentDto, student_id: number): Promise<any> {
+        const { name } = updateStudentDto ;
+        
         const student: IStudentProtected = await this.studentModel.findOne({
             student_id
         });
