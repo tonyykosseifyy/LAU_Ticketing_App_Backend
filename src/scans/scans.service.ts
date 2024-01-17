@@ -6,6 +6,7 @@ import { IEvent } from '../events/interface/event.interface';
 import { IStudent } from 'src/students/interface/student.interface';
 import { IScan, IScanDetailed } from './interface/scan.interface';
 import { AuthenticatedRequest } from 'src/interface/request.interface';
+import { Attendee } from './interface/attendee.interface';
 
 @Injectable()
 export class ScansService {
@@ -66,7 +67,7 @@ export class ScansService {
     await scan.save();
   } 
 
-  async getEventAttendees(eventId: string, request: AuthenticatedRequest): Promise<{student_id: number,name: string}[]> {
+  async getEventAttendees(eventId: string, request: AuthenticatedRequest): Promise<Attendee[]> {
     const club = request.user ;
 
     const event = await this.eventModel.findById(eventId);
