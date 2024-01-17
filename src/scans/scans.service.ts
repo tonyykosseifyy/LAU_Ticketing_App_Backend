@@ -6,6 +6,7 @@ import { IEvent } from '../events/interface/event.interface';
 import { IStudent } from 'src/students/interface/student.interface';
 import { IClub } from 'src/clubs/interface/club.interface';
 import { IScan, IScanDetailed } from './interface/scan.interface';
+import { AuthenticatedRequest } from 'src/interface/request.interface';
 
 @Injectable()
 export class ScansService {
@@ -16,11 +17,18 @@ export class ScansService {
   ) {}
 
   
-  async scanEvent(scanEventDto: ScanEventDto, eventId: string): Promise<void> {
+  async scanEvent(scanEventDto: ScanEventDto, eventId: string, request: AuthenticatedRequest): Promise<void> {
+    const club = request.user;
+
     const event = await this.eventModel.findById(eventId);
     if (!event) {
       throw new NotFoundException(`Event with ID ${eventId} not found`);
     }
+    
+    if ( !event.clubs.includes(club._id) ) {
+      throw new NotFoundException(`Club is not part of this event`);
+    }
+
     // check that the date now if between the start and end date of the event
     const now = new Date();
     const startDate = new Date(event.start_date);
@@ -59,7 +67,9 @@ export class ScansService {
     await scan.save();
   } 
 
-  async getEventAttendees(eventId: string, club: IClub): Promise<{student_id: number,name: string}[]> {
+  async getEventAttendees(eventId: string, request: AuthenticatedRequest): Promise<{student_id: number,name: string}[]> {
+    const club = request.user ;
+    
     const event = await this.eventModel.findById(eventId);
     if (!event) {
         throw new NotFoundException(`Event with ID ${eventId} not found`);

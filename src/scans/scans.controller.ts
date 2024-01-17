@@ -12,10 +12,11 @@ export class ScansController {
   async scanEvent(
     @Body() scanEventDto: ScanEventDto,
     @Res() response,
-    @Param('id', IsValidMongoIdPipe) eventId: string
+    @Param('id', IsValidMongoIdPipe) eventId: string,
+    @Req() request: AuthenticatedRequest
   ) {
     try {
-      await this.scansService.scanEvent(scanEventDto, eventId);
+      await this.scansService.scanEvent(scanEventDto, eventId, request);
 
       return response.status(201).json({
         message: 'User has been registered successfully',
@@ -35,8 +36,7 @@ export class ScansController {
     @Req() request: AuthenticatedRequest
   ) {
     try {
-      const club = request.user;
-      const attendees = await this.scansService.getEventAttendees(eventId, club);
+      const attendees = await this.scansService.getEventAttendees(eventId, request);
       return response.status(200).json({
         attendees,
       });
