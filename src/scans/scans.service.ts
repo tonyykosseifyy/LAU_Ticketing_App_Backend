@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { ScanEventDto } from './dto/scan-event.dto';
 import { IEvent } from '../events/interface/event.interface';
 import { IStudent } from 'src/students/interface/student.interface';
-import { IClub } from 'src/clubs/interface/club.interface';
 import { IScan, IScanDetailed } from './interface/scan.interface';
 import { AuthenticatedRequest } from 'src/interface/request.interface';
 
@@ -69,7 +68,7 @@ export class ScansService {
 
   async getEventAttendees(eventId: string, request: AuthenticatedRequest): Promise<{student_id: number,name: string}[]> {
     const club = request.user ;
-    
+
     const event = await this.eventModel.findById(eventId);
     if (!event) {
         throw new NotFoundException(`Event with ID ${eventId} not found`);
