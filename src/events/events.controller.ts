@@ -24,6 +24,18 @@ export class EventsController {
     }
   }
 
+  @Get('active')
+  async getActiveClubEvents(@Req() request: AuthenticatedRequest) {
+    const club = request.user;
+    try {
+      const events = await this.eventsService.getActiveClubEvents(club._id);
+      return events;
+    } catch (err) {
+      return err;
+    }
+  }
+
+
   @Post()
   async createEvent(
     @Req() request: AuthenticatedRequest,

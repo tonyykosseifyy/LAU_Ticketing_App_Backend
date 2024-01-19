@@ -32,6 +32,11 @@ export class EventsService {
         return club.events as unknown[] as IEvent[];
     }
 
+    async getActiveClubEvents(clubId: string): Promise<IEvent[]> {
+        const events = await this.eventModel.find({ clubs: clubId, end_date: { $gte: new Date() } });
+        return events;
+    }
+
     async createEvent(event: CreateEventDto): Promise<IEvent> {
         // check if the event name is already taken
         const oldEvent = await this.eventModel.findOne({ name: { $regex: event.name , $options: 'i' } });
