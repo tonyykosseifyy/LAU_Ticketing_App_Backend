@@ -33,7 +33,7 @@ export class EventsService {
     }
 
     async getActiveClubEvents(clubId: string): Promise<IEvent[]> {
-        const events = await this.eventModel.find({ clubs: clubId, end_date: { $gte: new Date() } });
+        const events = await this.eventModel.find({ clubs: clubId, end_date: { $gte: new Date() } }).sort({ start_date: 1 });
         return events;
     }
 
