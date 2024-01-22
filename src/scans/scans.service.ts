@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { ScanEventDto } from './dto/scan-event.dto';
 import { IEvent } from '../events/interface/event.interface';
 import { IStudent } from 'src/students/interface/student.interface';
-import { IScan, IScanDetailed } from './interface/scan.interface';
+import { IScan, IScanDetailed, IScanAttendees } from './interface/scan.interface';
 import { AuthenticatedRequest } from 'src/interface/request.interface';
 import { Attendee } from './interface/attendee.interface';
 
@@ -67,7 +67,7 @@ export class ScansService {
     await scan.save();
   } 
 
-  async getEventAttendees(eventId: string, request: AuthenticatedRequest): Promise<Attendee[]> {
+  async getEventAttendees(eventId: string, request: AuthenticatedRequest): Promise<any[]> {
     const club = request.user ;
 
     const event = await this.eventModel.findById(eventId);
@@ -80,7 +80,7 @@ export class ScansService {
     }
     
     // get all scans of the event
-    const scans: IScanDetailed[] = await this.scanModel.find({ event: eventId }).populate({
+    const scans = await this.scanModel.find({ event: eventId }).populate({
         path: 'student',
         model: 'Student',
         select: 'name student_id _id'
@@ -90,6 +90,6 @@ export class ScansService {
         throw new NotFoundException(`No scans found for this ${event.name}} event`);
     }
 
-    return scans.map(scan => scan.student);
+    return scans ;
     }    
 }
