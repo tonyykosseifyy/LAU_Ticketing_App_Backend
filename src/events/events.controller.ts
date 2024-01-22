@@ -1,8 +1,9 @@
 import { Body, Controller, Param } from '@nestjs/common';
 import { EventsService } from './events.service';
-import { Get, Req, Res, Post } from '@nestjs/common';
+import { Get, Req, Res, Post, Delete } from '@nestjs/common';
 import { AuthenticatedRequest } from '../interface/request.interface';
 import { CreateEventDto } from './dto/index.dto';
+import { IsValidMongoIdPipe } from 'src/scans/validations/event-id-pipe';
 
 @Controller('events')
 export class EventsController {
@@ -61,6 +62,27 @@ export class EventsController {
       });
     }
   }
+  @Delete(':id')
+  async deleteEvent(
+    @Param('id', IsValidMongoIdPipe) eventId: string,
+    @Res() response,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    try {
+      const club = request.user;
+
+      const event = await this.eventsService.deleteEvent(eventId, club);
+      return response.status(200).json({
+        message: 'Event has been deleted successfully',
+        event,
+      });
+    } catch (err) {
+      return response.status(err.status).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+  }
   
   @Get('/dashboard')
   async getEventsDetails(@Res() response) {
@@ -76,5 +98,6 @@ export class EventsController {
       });
     }
   }
+  
   
 }
