@@ -45,14 +45,14 @@ export class EventsService {
         });
         // for each event get the number of attendees
         const eventsWithCount = await Promise.all(events.map(async event => {
-            const count = await this.scanModel.countDocuments({ event: event._id });
+            const count = await this.scanModel.countDocuments({ event: event._id.toString() });
             const eventData = event.toObject();
-            console.log(count);
             return {
                 ...eventData,
                 attendee_count: count
             };
         }));
+
         return eventsWithCount;
     }
     
