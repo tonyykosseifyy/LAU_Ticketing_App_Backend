@@ -6,7 +6,6 @@ import { IEvent } from '../events/interface/event.interface';
 import { IStudent } from 'src/students/interface/student.interface';
 import { IScan, IScanDetailed, IScanAttendees } from './interface/scan.interface';
 import { AuthenticatedRequest } from 'src/interface/request.interface';
-import { Attendee } from './interface/attendee.interface';
 
 @Injectable()
 export class ScansService {
@@ -91,5 +90,5 @@ export class ScansService {
     }
 
     return scans ;
-    }    
+  }
 }
