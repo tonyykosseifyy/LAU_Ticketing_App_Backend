@@ -3,7 +3,7 @@ import { IEvent, IEventWithCount } from './interface/event.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IClub } from '../clubs/interface/club.interface';
-import { CreateEventDto } from './dto/index.dto';
+import { CreateEventDto, UpdateEventDto } from './dto/index.dto';
 import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';
 import { createEventExcelFile } from './utils/excel';
@@ -82,6 +82,33 @@ export class EventsService {
         return event;
     }
 
+    async updateEvent(eventId: string, club: IClub, updateEventDto: UpdateEventDto): Promise<any> {
+        const { end_date } = updateEventDto;
+
+        const event = await this.eventModel.findById(eventId);
+        if (!event) {
+            throw new NotFoundException(`Event with ID ${eventId} not found`);
+        }
+        if (!event.clubs.includes(club._id)) {
+            throw new BadRequestException(`Event with ID ${eventId} does not belong to club with ID ${club._id}`);
+        }
+
+        // check that event end date is greater than event start date
+        const startDate = new Date(event.start_date);
+        const endDate = new Date(end_date);
+
+        if (endDate < startDate) {
+            throw new BadRequestException(`Event end date must be greater than event start date`);
+        }
+        
+        // update the event
+        event.end_date = end_date;
+        try {
+            await event.save();
+        } catch(err) {
+            throw new BadRequestException(`Error updating event: ${err}`);
+        }
+    }
 
     async createEvent(event: CreateEventDto): Promise<IEvent> {
         // check if the event name is already taken

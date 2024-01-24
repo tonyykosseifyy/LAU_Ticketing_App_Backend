@@ -1,8 +1,8 @@
 import { Body, Controller, Param } from '@nestjs/common';
 import { EventsService } from './events.service';
-import { Get, Req, Res, Post, Delete } from '@nestjs/common';
+import { Get, Req, Res, Post, Delete, Put } from '@nestjs/common';
 import { AuthenticatedRequest } from '../interface/request.interface';
-import { CreateEventDto } from './dto/index.dto';
+import { CreateEventDto, UpdateEventDto } from './dto/index.dto';
 import { IsValidMongoIdPipe } from 'src/scans/validations/event-id-pipe';
 
 @Controller('events')
@@ -83,6 +83,29 @@ export class EventsController {
       });
     }
   }
+  
+  @Put(':id')
+  async updateEvent(
+    @Param('id', IsValidMongoIdPipe) eventId: string,
+    @Res() response,
+    @Req() request: AuthenticatedRequest,
+    @Body() updateEventDto: UpdateEventDto,
+  ) {
+    try {
+      const club = request.user ;
+      const event = await this.eventsService.updateEvent(eventId, club, updateEventDto);
+      return response.status(200).json({
+        message: 'Event has been updated successfully',
+        event,
+      });
+    } catch (err) {
+      return response.status(err.status).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+  }
+
   
   @Get('/dashboard')
   async getEventsDetails(@Res() response) {

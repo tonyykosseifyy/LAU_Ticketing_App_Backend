@@ -39,6 +39,5 @@ import { ScansModule } from './scans/scans.module';
       useClass: AuthenticatedGuard,
     },
   ],
-
 })
 export class AppModule {}
