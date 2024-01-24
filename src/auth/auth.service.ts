@@ -4,8 +4,8 @@ import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { MailService } from '../mail/mail.service';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
-import { IClub, IClubResponse } from 'src/clubs/interface/club.interface';
-import { AuthenticatedRequest, LoginRequest } from 'src/interface/request.interface';
+import { IClubResponse } from 'src/clubs/interface/club.interface';
+import { LoginRequest } from 'src/interface/request.interface';
 
 const otpGenerator = require('otp-generator');
 

@@ -4,10 +4,6 @@ import { ValidationPipe } from '@nestjs/common';
 import * as session from "express-session"
 import * as passport from "passport"
 import { ConfigService } from "@nestjs/config";
-import * as moment from 'moment-timezone';
-
-// Set the default timezone
-// moment.tz.setDefault('Asia/Beirut');
 
 
 

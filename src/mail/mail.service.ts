@@ -1,9 +1,8 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { IClub } from 'src/clubs/interface/club.interface';
-import { EventDetailed } from 'src/events/interface/event-details';
 import { Attachment } from './interface/attachment';
-import { IEvent, IEventWithCount } from 'src/events/interface/event.interface';
+import { IEventWithCount } from 'src/events/interface/event.interface';
 
 @Injectable()
 export class MailService {

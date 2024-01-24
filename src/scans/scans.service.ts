@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { ScanEventDto } from './dto/scan-event.dto';
 import { IEvent } from '../events/interface/event.interface';
 import { IStudent } from 'src/students/interface/student.interface';
-import { IScan, IScanDetailed, IScanAttendees } from './interface/scan.interface';
+import { IScan } from './interface/scan.interface';
 import { AuthenticatedRequest } from 'src/interface/request.interface';
 
 @Injectable()

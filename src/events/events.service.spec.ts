@@ -5,7 +5,6 @@ import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import { EventSchema } from './schemas/event.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Connection } from 'mongoose';
-import { CreateEventDto } from './dto/create-event.dto';
 
 describe('EventsService - GET club events', () => {
   let service: EventsService;

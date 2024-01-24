@@ -8,8 +8,7 @@ import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';
 import { createEventExcelFile } from './utils/excel';
 import { IScan, IScanDetailed } from '../scans/interface/scan.interface';
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 
 @Injectable()
