@@ -187,7 +187,7 @@ export class AuthService {
       _id: club._id,
       name: club.name,
       email: club.email,
-    }
+}
 
     return returned_club as any as IClubResponse;
   }
