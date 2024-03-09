@@ -62,6 +62,7 @@ export class EventsController {
       });
     }
   }
+  
   @Delete(':id')
   async deleteEvent(
     @Param('id', IsValidMongoIdPipe) eventId: string,
