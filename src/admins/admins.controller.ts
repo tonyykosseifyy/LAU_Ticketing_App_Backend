@@ -2,8 +2,6 @@ import { Get, Req, Res, Post, Delete, Put, Controller } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../auth/user-roles';
-import { UseGuards } from '@nestjs/common';
-import { AuthenticatedGuard } from '../auth/authenticated.guard';
 import { UseInterceptors } from '@nestjs/common';
 import { RolesInterceptor } from './interceptor';
 
@@ -14,9 +12,39 @@ import { RolesInterceptor } from './interceptor';
 export class AdminsController {
     constructor(private readonly adminsService: AdminsService) {}
 
-    @Get()
-    async getAllEvents() {
-        const events = await this.adminsService.getAllEvents();
-        return events ;
-      }
+    // events
+    @Get('/events')
+    async getAllEvents(@Res() response) {
+        try {
+            const events = await this.adminsService.getAllEvents();
+            return response.status(200).send({
+                events,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+
+    // GET event by id
+    @Get('/events/:id')
+    async getEvent(@Req() request, @Res() response) {
+        const eventId = request.params.id;
+        try {
+            const event = await this.adminsService.getEventById(eventId);
+            return response.status(200).send({
+                event,
+            });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+
+    
+
 }

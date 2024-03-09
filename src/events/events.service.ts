@@ -26,6 +26,7 @@ export class EventsService {
         return events;
     }
     
+    
 
     async getUserEvents(userId: string): Promise<IEvent[]> {
         const user = await this.userModel.findById(userId).populate({

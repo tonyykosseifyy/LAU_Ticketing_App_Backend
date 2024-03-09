@@ -13,6 +13,10 @@ export class AdminsService {
         return await this.eventsService.getAllEvents();
     }
 
+    async getEventById(eventId: string): Promise<IEvent> {
+        return await this.eventsService.getEventById(eventId);
+    }
+
     
 
     
