@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { ClubsService } from 'src/clubs/clubs.service';
+import { ClubsService } from 'src/users/users.service';
 
 const authRoutes = (request: any) : boolean => {
   if ((['/auth/verify', '/auth/login', '/auth/forgot-password', '/auth/reset-password'].includes(request.route.path)) && request.route.methods.post ) {

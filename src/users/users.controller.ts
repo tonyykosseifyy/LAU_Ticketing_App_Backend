@@ -1,15 +1,15 @@
 import { Body, Controller, Post, Get, Res, Delete, Param } from '@nestjs/common';
-import { ClubsService } from './clubs.service';
-import { CreateClubDto } from './dto/create-club.dto';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
-@Controller('clubs')
-export class ClubsController {
-    constructor(private readonly clubsService: ClubsService) {}
+@Controller('users')
+export class UsersController {
+    constructor(private readonly usersService: UsersService) {}
 
     @Get()
     async getClubs(@Res() response) {
         try {
-            const clubs = await this.clubsService.getClubs();
+            const clubs = await this.usersService.getClubs();
             return response.status(200).json({
                 clubs
             });
@@ -22,9 +22,9 @@ export class ClubsController {
     }
 
     @Post()
-    async create(@Res() response, @Body() createClubDto: CreateClubDto) {
+    async create(@Res() response, @Body() createUserDto: CreateUserDto) {
         try {
-            const newClub = await this.clubsService.create(createClubDto);
+            const newClub = await this.usersService.create(createUserDto);
             return response.status(201).json({
                 message: "Club has been created successfully",
                 newClub
@@ -40,7 +40,7 @@ export class ClubsController {
     @Delete('/:id')
     async delete(@Param('id') id: string, @Res() response) {
         try {
-            const club = await this.clubsService.delete(id);
+            const club = await this.usersService.delete(id);
             return response.status(200).json({
                 message: `Club ${id} has been deleted successfully`,
                 club

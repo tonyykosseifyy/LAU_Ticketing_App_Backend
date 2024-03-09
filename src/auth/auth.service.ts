@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
-import { ClubsService } from '../clubs/clubs.service';
+import { ClubsService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { MailService } from '../mail/mail.service';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
-import { IClubResponse } from 'src/clubs/interface/club.interface';
+import { IClubResponse } from 'src/users/interface/user.interface';
 import { LoginRequest } from 'src/interface/request.interface';
 
 const otpGenerator = require('otp-generator');

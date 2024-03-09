@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { IEvent, IEventWithCount } from './interface/event.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IClub } from '../clubs/interface/club.interface';
+import { IClub } from '../users/interface/user.interface';
 import { CreateEventDto, UpdateEventDto } from './dto/index.dto';
 import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';

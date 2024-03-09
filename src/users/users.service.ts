@@ -1,20 +1,20 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
-import { IClub } from './interface/club.interface';
-import { CreateClubDto } from './dto/create-club.dto';
+import { IUser } from './interface/user.interface';
+import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class ClubsService {
-    constructor(@InjectModel('Club') private readonly clubModel: Model<IClub>) {}
+export class UsersService {
+    constructor(@InjectModel('User') private readonly userModel: Model<IUser>) {}
 
-    async getClubs() : Promise<IClub[]> {
-        return await this.clubModel.find();
+    async getClubs() : Promise<IUser[]> {
+        return await this.userModel.find();
     }
 
-    async create(club: CreateClubDto): Promise<IClub> {
-        const oldClub = await this.clubModel.findOne({ name: { $regex: club.name , $options: 'i' } });
+    async create(club: CreateUserDto): Promise<IUser> {
+        const oldClub = await this.userModel.findOne({ name: { $regex: club.name , $options: 'i' } });
         if (oldClub) {
             throw new NotFoundException(`Club ${club.name} already exists`);
         }
@@ -23,7 +23,7 @@ export class ClubsService {
 
         club.password = hashedPassword;
 
-        const newClub = new this.clubModel(club);
+        const newClub = new this.userModel(club);
         try {
             await newClub.save();
         } catch (err){
@@ -37,28 +37,28 @@ export class ClubsService {
         return newClub;
     }
 
-    async delete(id: string): Promise<IClub> {
+    async delete(id: string): Promise<IUser> {
         if (!isValidObjectId(id)) {
             throw new BadRequestException('Invalid ID format');
         }
-        const club = await this.clubModel.findById(id);
+        const club = await this.userModel.findById(id);
         if (!club) {
             throw new NotFoundException(`Club with ID ${id} not found`);
         }
-        await this.clubModel.deleteOne({ _id: id });
+        await this.userModel.deleteOne({ _id: id });
         return club;
     }
 
 
-    async getClub(name: string): Promise<IClub> {
-        return await this.clubModel.findOne({ name: { $regex: name , $options: 'i' } });
+    async getClub(name: string): Promise<IUser> {
+        return await this.userModel.findOne({ name: { $regex: name , $options: 'i' } });
     }
 
-    async findById(id: string): Promise<IClub> {
+    async findById(id: string): Promise<IUser> {
         if (!isValidObjectId(id)) {
             throw new BadRequestException('Invalid ID format');
         }
-        const club = await this.clubModel.findById(id);
+        const club = await this.userModel.findById(id);
         if (!club) {
             return null ;
         }

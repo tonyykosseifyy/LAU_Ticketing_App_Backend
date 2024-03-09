@@ -1,6 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { IClub } from 'src/clubs/interface/club.interface';
+import { IClub } from 'src/users/interface/user.interface';
 import { Attachment } from './interface/attachment';
 import { IEventWithCount } from 'src/events/interface/event.interface';
 

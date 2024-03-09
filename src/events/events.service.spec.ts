@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventsService } from './events.service';
-import { ClubSchema } from '../clubs/schemas/club.schema';
+import { ClubSchema } from '../users/schemas/user.schema';
 import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import { EventSchema } from './schemas/event.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';

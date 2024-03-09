@@ -107,20 +107,20 @@ export class EventsController {
   }
 
   
-  @Get('/dashboard')
-  async getEventsDetails(@Res() response) {
-    try {
-      const events = await this.eventsService.getEventsDashboard();
-      return response.status(200).json({
-        events,
-      });
-    } catch (err) {
-      return response.status(err.status).json({
-        status: err.status,
-        message: err.message,
-      });
-    }
-  }
+  // @Get('/dashboard')
+  // async getEventsDetails(@Res() response) {
+  //   try {
+  //     const events = await this.eventsService.getEventsDashboard();
+  //     return response.status(200).json({
+  //       events,
+  //     });
+  //   } catch (err) {
+  //     return response.status(err.status).json({
+  //       status: err.status || 500,
+  //       message: err.message,
+  //     });
+  //   }
+  // }
   
   
 }

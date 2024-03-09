@@ -7,7 +7,7 @@ import {
   Matches
 } from 'class-validator';
 
-export class CreateClubDto {
+export class CreateUserDto {
   @IsString()
   @MaxLength(80)
   @MinLength(3)

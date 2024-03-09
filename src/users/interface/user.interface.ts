@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 
 
-export interface IClub extends Document {
+export interface IUser extends Document {
     readonly name: string;
     password: string;
     email: string;
@@ -11,7 +11,7 @@ export interface IClub extends Document {
     events: string[];
 }
 
-export interface IClubResponse {
+export interface IUserResponse {
     readonly _id: string;
     readonly name: string;
     readonly email: string;

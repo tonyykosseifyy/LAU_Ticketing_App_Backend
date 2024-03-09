@@ -2,8 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from 'mongoose';
 
 @Schema()
-export class Club extends Document {
-
+export class User extends Document {
   @Prop({ required: true, unique: true, minlength: 3, maxlength: 80 })
   name: string;
 
@@ -20,10 +19,10 @@ export class Club extends Document {
   expiresAt: Date;
 
   @Prop({ default: false }) 
-  verified: boolean 
+  verified: boolean;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Event' }], default: [] })
   events: Types.ObjectId[];
 }
 
-export const ClubSchema = SchemaFactory.createForClass(Club);
+export const UserSchema = SchemaFactory.createForClass(User);

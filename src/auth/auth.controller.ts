@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LocalGuard } from './local.auth.guard';
 import { Request } from 'express';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
-import { IClub, IClubResponse } from 'src/clubs/interface/club.interface';
+import { IClub, IClubResponse } from 'src/users/interface/user.interface';
 import { AuthenticatedRequest, LoginRequest } from '../interface/request.interface';
 
 @Controller('auth')

@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { IClub } from '../clubs/interface/club.interface';
+import { IClub } from '../users/interface/user.interface';
 
 export interface AuthenticatedRequest extends Request {
     user: IClub ;
