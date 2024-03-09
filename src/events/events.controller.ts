@@ -2,7 +2,7 @@ import { Body, Controller, Param } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { Get, Req, Res, Post, Delete, Put } from '@nestjs/common';
 import { AuthenticatedRequest } from '../interface/request.interface';
-import { CreateEventDto, UpdateEventDto } from './dto/index.dto';
+import { CreateEventDto, UpdateEventEndDto } from './dto/index.dto';
 import { IsValidMongoIdPipe } from 'src/scans/validations/event-id-pipe';
 
 @Controller('events')
@@ -90,11 +90,11 @@ export class EventsController {
     @Param('id', IsValidMongoIdPipe) eventId: string,
     @Res() response,
     @Req() request: AuthenticatedRequest,
-    @Body() updateEventDto: UpdateEventDto,
+    @Body() updateEventDto: UpdateEventEndDto,
   ) {
     try {
       const user = request.user ;
-      const event = await this.eventsService.updateEvent(eventId, user, updateEventDto);
+      const event = await this.eventsService.updateEventEndDate(eventId, user, updateEventDto);
       return response.status(200).json({
         message: 'Event has been updated successfully',
         event,

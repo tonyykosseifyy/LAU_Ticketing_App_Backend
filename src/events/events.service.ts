@@ -3,7 +3,7 @@ import { IEvent, IEventWithCount } from './interface/event.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IUser } from '../users/interface/user.interface';
-import { CreateEventDto, UpdateEventDto } from './dto/index.dto';
+import { CreateEventDto, UpdateEventEndDto, UpdateEventDto } from './dto/index.dto';
 import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';
 import { createEventExcelFile } from './utils/excel';
@@ -26,8 +26,6 @@ export class EventsService {
         return events;
     }
     
-    
-
     async getUserEvents(userId: string): Promise<IEvent[]> {
         const user = await this.userModel.findById(userId).populate({
             path: 'events',
@@ -105,7 +103,15 @@ export class EventsService {
         return event; 
     }
 
-    async updateEvent(eventId: string, user: IUser, updateEventDto: UpdateEventDto): Promise<any> {
+    async updateEvent(eventId: string, updateEventDto: UpdateEventDto) {
+        const event = await this.eventModel.findByIdAndUpdate(eventId, updateEventDto, { new: true });
+        if (!event) {
+            throw new NotFoundException(`Event with ID ${eventId} not found`);
+        }
+        return event;
+    }
+    
+    async updateEventEndDate(eventId: string, user: IUser, updateEventDto: UpdateEventEndDto): Promise<IEvent> {
         const { end_date } = updateEventDto;
 
         const event: IEvent = await this.eventModel.findById(eventId);
@@ -130,6 +136,7 @@ export class EventsService {
         } catch(err) {
             throw new BadRequestException(`Error updating event: ${err}`);
         }
+        return event;
     }
 
     async createEvent(event: CreateEventDto): Promise<IEvent> {

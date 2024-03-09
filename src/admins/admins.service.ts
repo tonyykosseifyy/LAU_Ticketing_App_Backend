@@ -3,6 +3,7 @@ import { IEvent } from '../events/interface/event.interface';
 import { EventsService } from '../events/events.service';
 import { IUser } from 'src/users/interface/user.interface';
 import { UsersService } from 'src/users/users.service';
+import { UpdateEventDto } from 'src/events/dto/update-event.dto';
 
 @Injectable()
 export class AdminsService {
@@ -20,6 +21,11 @@ export class AdminsService {
     async getEventById(eventId: string): Promise<IEvent> {
         return await this.eventsService.getEventById(eventId);
     }
+    // Update Event
+    async updateEvent(eventId: string, payload: UpdateEventDto): Promise<IEvent> {
+        return await this.eventsService.updateEvent(eventId, payload);
+    }
+
     // Delete Event 
     async deleteEvent(eventId: string): Promise<IEvent> {
         return await this.eventsService.deleteEventAdmin(eventId);

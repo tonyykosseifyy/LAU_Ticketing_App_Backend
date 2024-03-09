@@ -1,9 +1,10 @@
-import { Get, Req, Res, Post, Delete, Put, Controller } from '@nestjs/common';
+import { Get, Req, Res, Post, Delete, Put, Controller, Body } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../auth/user-roles';
 import { UseInterceptors } from '@nestjs/common';
 import { RolesInterceptor } from './interceptor';
+import { UpdateEventDto } from '../events/dto/update-event.dto';
 
 @UseInterceptors(RolesInterceptor)
 @Roles(UserRole.Admin)
@@ -44,7 +45,26 @@ export class AdminsController {
         }
     }
 
-    // DELETE Event By Ed
+    // Update Event
+    @Put('/events/:id')
+    async updateEvent(@Req() request, @Res() response, @Body() updateEventDto: UpdateEventDto,) {
+        const eventId = request.params.id;
+        const payload = request.body;
+        try {
+            const event = await this.adminsService.updateEvent(eventId, payload);
+            return response.status(200).send({
+                message: `Event ${eventId} has been updated successfully`,
+                event,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+
+    // DELETE Event By Id
     @Delete('/events/:id')
     async deleteEvent(@Req() request, @Res() response) {
         const eventId = request.params.id;
