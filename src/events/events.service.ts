@@ -21,6 +21,11 @@ export class EventsService {
         private readonly mailService: MailService
     ) {}
 
+    async getAllEvents(): Promise<IEvent[]> {
+        const events = await this.eventModel.find().sort({ start_date: -1 });
+        return events;
+    }
+    
 
     async getUserEvents(userId: string): Promise<IEvent[]> {
         const user = await this.userModel.findById(userId).populate({

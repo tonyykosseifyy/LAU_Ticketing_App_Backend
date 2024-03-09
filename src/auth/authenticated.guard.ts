@@ -22,13 +22,14 @@ export class AuthenticatedGuard implements CanActivate {
     if (authRoutes(request)) {
       return true;
     }
+    
 
     if (!request.isAuthenticated()) {
       return false; // Stop here if user is not authenticated
     }
+    
 
     const requiredRoles = this.reflector.get<UserRole[]>('roles', context.getHandler()) || [];
-    
     if (requiredRoles.length === 0) {
       return true; // No specific roles required, authenticated user is enough
     }
@@ -44,7 +45,7 @@ export class AuthenticatedGuard implements CanActivate {
       });
       return false;
     }
-
+    console.log(requiredRoles)
     return requiredRoles.includes(user.role); // Check if user's role matches any of the required roles
   }
 }
