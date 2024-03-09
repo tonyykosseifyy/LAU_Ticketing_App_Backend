@@ -9,48 +9,48 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
     constructor(@InjectModel('User') private readonly userModel: Model<IUser>) {}
 
-    async getClubs() : Promise<IUser[]> {
+    async getUsers() : Promise<IUser[]> {
         return await this.userModel.find();
     }
 
-    async create(club: CreateUserDto): Promise<IUser> {
-        const oldClub = await this.userModel.findOne({ name: { $regex: club.name , $options: 'i' } });
-        if (oldClub) {
-            throw new NotFoundException(`Club ${club.name} already exists`);
+    async create(user: CreateUserDto): Promise<IUser> {
+        const oldUser = await this.userModel.findOne({ name: { $regex: user.name , $options: 'i' } });
+        if (oldUser) {
+            throw new NotFoundException(`User ${user.name} already exists`);
         }
         
-        const hashedPassword = await bcrypt.hash(club.password, 10);
+        const hashedPassword = await bcrypt.hash(user.password, 10);
 
-        club.password = hashedPassword;
+        user.password = hashedPassword;
 
-        const newClub = new this.userModel(club);
+        const newUser = new this.userModel(user);
         try {
-            await newClub.save();
+            await newUser.save();
         } catch (err){
             if (err.code === 11000) {
                 throw new BadRequestException('Email should be unique for a given Club');
             }
-            throw new BadRequestException('Could not create club');
+            throw new BadRequestException('Could not create user');
         }
 
         
-        return newClub;
+        return newUser;
     }
 
     async delete(id: string): Promise<IUser> {
         if (!isValidObjectId(id)) {
             throw new BadRequestException('Invalid ID format');
         }
-        const club = await this.userModel.findById(id);
-        if (!club) {
+        const user = await this.userModel.findById(id);
+        if (!user) {
             throw new NotFoundException(`Club with ID ${id} not found`);
         }
         await this.userModel.deleteOne({ _id: id });
-        return club;
+        return user;
     }
 
 
-    async getClub(name: string): Promise<IUser> {
+    async getUser(name: string): Promise<IUser> {
         return await this.userModel.findOne({ name: { $regex: name , $options: 'i' } });
     }
 
@@ -58,12 +58,10 @@ export class UsersService {
         if (!isValidObjectId(id)) {
             throw new BadRequestException('Invalid ID format');
         }
-        const club = await this.userModel.findById(id);
-        if (!club) {
+        const user = await this.userModel.findById(id);
+        if (!user) {
             return null ;
         }
-        return club;
+        return user;
     }
-    
-    
 }
