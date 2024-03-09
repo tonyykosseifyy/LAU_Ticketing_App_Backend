@@ -12,13 +12,17 @@ export class AdminsService {
     ) {}
         
 
-    // GET all events
+    // GET All Events
     async getAllEvents(): Promise<IEvent[]> {
         return await this.eventsService.getAllEvents();
     }
-
+    // GET Event By Id
     async getEventById(eventId: string): Promise<IEvent> {
         return await this.eventsService.getEventById(eventId);
+    }
+    // Delete Event 
+    async deleteEvent(eventId: string): Promise<IEvent> {
+        return await this.eventsService.deleteEventAdmin(eventId);
     }
 
     async getAllUsers(): Promise<IUser[]> {
@@ -28,6 +32,9 @@ export class AdminsService {
     async getDetailedUsers(): Promise<IUser[]> {
         return await this.usersService.getDetailedUsers();
     }
+
+    
+
     
 
     

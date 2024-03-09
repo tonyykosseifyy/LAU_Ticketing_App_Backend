@@ -44,6 +44,24 @@ export class AdminsController {
         }
     }
 
+    // DELETE Event By Ed
+    @Delete('/events/:id')
+    async deleteEvent(@Req() request, @Res() response) {
+        const eventId = request.params.id;
+        try {
+            const event = await this.adminsService.deleteEvent(eventId);
+            return response.status(200).send({
+                message: `Event ${eventId} has been deleted successfully`,
+                event,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+
     // GET all users
     @Get('/users')
     async getAllUsers(@Res() response) {

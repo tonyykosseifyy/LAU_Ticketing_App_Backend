@@ -61,7 +61,30 @@ export class EventsService {
         return eventsWithCount;
     }
     
-    
+    async deleteEventAdmin(eventId: string): Promise<IEvent> {
+        const event = await this.eventModel.findById(eventId);
+        if (!event) {
+            throw new NotFoundException(`Event with ID ${eventId} not found`);
+        }
+        // Remove the event from the user
+        await this.userModel.updateMany({ events: eventId }, { $pull: { events: event._id } });
+        // Remove the event from the database
+        await this.eventModel.findByIdAndDelete(eventId);
+
+        // Stop and remove the cron job associated with this event
+        this.stopCronJob(eventId);
+
+        return event;
+    }
+    stopCronJob(eventId: string) {
+        const cronJob = this.cronJobs.get(eventId);
+        if (cronJob) {
+            cronJob.stop();
+            this.cronJobs.delete(eventId);
+        }
+    }
+
+
     async deleteEvent(eventId: string, user: IUser): Promise<IEvent> {
         const event = await this.eventModel.findById(eventId);
         if (!event) {
@@ -78,13 +101,8 @@ export class EventsService {
 
 
         // Stop and remove the cron job associated with this event
-        const cronJob = this.cronJobs.get(eventId);
-        if (cronJob) {
-            cronJob.stop();
-            this.cronJobs.delete(eventId);
-        }
-
-        return event;
+        this.stopCronJob(eventId);
+        return event; 
     }
 
     async updateEvent(eventId: string, user: IUser, updateEventDto: UpdateEventDto): Promise<any> {

@@ -98,9 +98,9 @@ export class ScansService {
     
     // get all scans of the event
     const scans = await this.scanModel.find({ event: eventId }).populate({
-        path: 'student',
-        model: 'Student',
-        select: 'name student_id _id'
+      path: 'student',
+      model: 'Student',
+      select: 'name student_id _id'
     });
 
     if (!scans) {
