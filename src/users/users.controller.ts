@@ -7,9 +7,9 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
     @Get()
-    async getClubs(@Res() response) {
+    async getUsers(@Res() response) {
         try {
-            const clubs = await this.usersService.getClubs();
+            const clubs = await this.usersService.getUsers();
             return response.status(200).json({
                 clubs
             });
@@ -24,10 +24,10 @@ export class UsersController {
     @Post()
     async create(@Res() response, @Body() createUserDto: CreateUserDto) {
         try {
-            const newClub = await this.usersService.create(createUserDto);
+            const newUser = await this.usersService.create(createUserDto);
             return response.status(201).json({
-                message: "Club has been created successfully",
-                newClub
+                message: "User has been created successfully",
+                newUser
             });
           } catch (err) {
             return response.status(err.status).json({
@@ -40,10 +40,10 @@ export class UsersController {
     @Delete('/:id')
     async delete(@Param('id') id: string, @Res() response) {
         try {
-            const club = await this.usersService.delete(id);
+            const user = await this.usersService.delete(id);
             return response.status(200).json({
-                message: `Club ${id} has been deleted successfully`,
-                club
+                message: `User ${id} has been deleted successfully`,
+                user
             });
         } catch(err) {
             return response.status(err.status).json({

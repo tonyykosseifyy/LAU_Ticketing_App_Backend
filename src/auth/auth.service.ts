@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
-import { ClubsService } from '../users/users.service';
+import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { MailService } from '../mail/mail.service';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
-import { IClubResponse } from 'src/users/interface/user.interface';
+import { IUserResponse } from 'src/users/interface/user.interface';
 import { LoginRequest } from 'src/interface/request.interface';
 
 const otpGenerator = require('otp-generator');
@@ -12,18 +12,18 @@ const otpGenerator = require('otp-generator');
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly clubsService: ClubsService,
+    private readonly usersService: UsersService,
     private readonly mailService: MailService
   ) {}
 
   async forgotPassword(forgotPasswordReqDto: ForgotPasswordReqDto) {
     const { name, email } = forgotPasswordReqDto;
-    const club = await this.clubsService.getClub(name);
+    const user = await this.usersService.getUser(name);
 
-    if (!club)
+    if (!user)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
 
-    if (club.email !== email) {
+    if (user.email !== email) {
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
     }
 
@@ -37,14 +37,14 @@ export class AuthService {
     // hash verification code
     const hash = await bcrypt.hash(verificationCode, 10);
 
-    club.code = hash;
+    user.code = hash;
     // 15 min
-    club.expiresAt = new Date(Date.now() + 900000);
+    user.expiresAt = new Date(Date.now() + 900000);
 
     try {
-      await club.save();
+      await user.save();
       // send verification code via email
-      await this.mailService.sendResetPassword(club, verificationCode);
+      await this.mailService.sendResetPassword(user, verificationCode);
       return {
         message: 'An email has been sent to you with a 6-digit code for password reset',
         statusCode: HttpStatus.OK,
@@ -56,29 +56,29 @@ export class AuthService {
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
     const { name, code, password } = resetPasswordDto;
 
-    const club = await this.clubsService.getClub(name);
-    if (!club)
+    const user = await this.usersService.getUser(name);
+    if (!user)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
 
-    if (!club.code || !club.expiresAt) {
+    if (!user.code || !user.expiresAt) {
       throw new HttpException('Please go to forgot password first', HttpStatus.BAD_REQUEST);
     }
 
-    const codeMatch: boolean = await bcrypt.compare(code, club.code);
+    const codeMatch: boolean = await bcrypt.compare(code, user.code);
     if (!codeMatch)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
 
-    if (club.expiresAt < new Date(Date.now())) {
+    if (user.expiresAt < new Date(Date.now())) {
       throw new HttpException('Code expired', HttpStatus.BAD_REQUEST);
     }
     const newPassword = await bcrypt.hash(password, 10);
 
-    club.verified = true;
-    club.password = newPassword;
-    club.code = null;
-    club.expiresAt = null;
+    user.verified = true;
+    user.password = newPassword;
+    user.code = null;
+    user.expiresAt = null;
 
-    await club.save();
+    await user.save();
 
     return {
       message: 'Password reset successful',
@@ -86,66 +86,66 @@ export class AuthService {
     };
   }
 
-  async verify(verifyDto: VerifyDto, req): Promise<IClubResponse> {
+  async verify(verifyDto: VerifyDto, req): Promise<IUserResponse> {
     const { name, code, password } = verifyDto;
 
-    const club = await this.clubsService.getClub(name);
+    const user = await this.usersService.getUser(name);
 
-    if (!club)
+    if (!user)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
 
-    if (club.verified) {
+    if (user.verified) {
       throw new HttpException('Already verified', HttpStatus.BAD_REQUEST);
     }
-    if (!club.code || !club.expiresAt) {
+    if (!user.code || !user.expiresAt) {
       throw new HttpException('Please login first', HttpStatus.BAD_REQUEST);
     }
 
-    const codeMatch: boolean = await bcrypt.compare(code, club.code);
+    const codeMatch: boolean = await bcrypt.compare(code, user.code);
     if (!codeMatch)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
 
-    if (club.expiresAt < new Date(Date.now())) {
+    if (user.expiresAt < new Date(Date.now())) {
       throw new HttpException('Code expired', HttpStatus.BAD_REQUEST);
     }
     const newPassword = await bcrypt.hash(password, 10);
 
-    club.verified = true;
-    club.password = newPassword;
-    club.code = null;
-    club.expiresAt = null;
+    user.verified = true;
+    user.password = newPassword;
+    user.code = null;
+    user.expiresAt = null;
 
-    await club.save();
+    await user.save();
 
-    let returned_club: IClubResponse = {
-      _id: club._id,
-      name: club.name,
-      email: club.email,
+    let returned_user: IUserResponse = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
     }
     // generate a session cookie
     return new Promise((resolve, reject) => {
-      req.login(club, (err) => {
+      req.login(user, (err) => {
         if (err) {
           reject(err);
         }
-        resolve(returned_club);
+        resolve(returned_user);
       });
     });
   }
 
-  async validateClub(name: string, password: string): Promise<any> {
-    const club = await this.clubsService.getClub(name);
-    if (!club)
+  async validateUser(name: string, password: string): Promise<any> {
+    const user = await this.usersService.getUser(name);
+    if (!user)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
 
     const passwordMatch: boolean = await this.passwordMatch(
       password,
-      club.password,
+      user.password,
     );
     if (!passwordMatch)
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
 
-    if (!club.verified) {
+    if (!user.verified) {
       // generate verification code
       const verificationCode = otpGenerator.generate(6, {
         upperCaseAlphabets: false,
@@ -156,13 +156,13 @@ export class AuthService {
       // hash verification code
       const hash = await bcrypt.hash(verificationCode, 10);
 
-      club.code = hash;
+      user.code = hash;
       // 15 min
-      club.expiresAt = new Date(Date.now() + 900000);
+      user.expiresAt = new Date(Date.now() + 900000);
 
-      await club.save();
+      await user.save();
       // send verification code via email
-      await this.mailService.sendEmailVerification(club, verificationCode);
+      await this.mailService.sendEmailVerification(user, verificationCode);
 
       throw new HttpException(
         'A 6-digit verification code has been sent to your email. Please check your email for verification.',
@@ -171,7 +171,7 @@ export class AuthService {
     }
 
     return {
-      club,
+      user,
     };
   }
 
@@ -179,17 +179,17 @@ export class AuthService {
     return await bcrypt.compare(password, hash);
   }
 
-  async login(@Req() request: LoginRequest): Promise<IClubResponse> {
-    let { club } = request.user;
-    // return club without code, expires at, password, events fields
+  async login(@Req() request: LoginRequest): Promise<IUserResponse> {
+    let { user } = request.user;
+    // return user without code, expires at, password, events fields
     
-    const returned_club: IClubResponse = {
-      _id: club._id,
-      name: club.name,
-      email: club.email,
+    const returned_user: IUserResponse = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
 }
 
-    return returned_club as any as IClubResponse;
+    return returned_user as any as IUserResponse;
   }
 
   async logout(@Req() request: Request): Promise<any> {
