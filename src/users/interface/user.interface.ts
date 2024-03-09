@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-
+import { UserRole } from 'src/auth/user-roles';
 
 export interface IUser extends Document {
     readonly name: string;
@@ -9,6 +9,7 @@ export interface IUser extends Document {
     code: string ;
     expiresAt: Date;
     events: string[];
+    readonly role : UserRole ;
 }
 
 export interface IUserResponse {

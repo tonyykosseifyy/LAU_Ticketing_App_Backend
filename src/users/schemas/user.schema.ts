@@ -12,6 +12,9 @@ export class User extends Document {
   @Prop({ required: true, unique: true, minlength: 9, maxlength: 200 })
   email: string;
 
+  @Prop({ default: 'user', enum: ['user', 'admin'] })
+  role: string;
+
   @Prop()
   code: string;
 
