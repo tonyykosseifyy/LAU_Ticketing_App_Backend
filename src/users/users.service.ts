@@ -5,14 +5,37 @@ import { IUser } from './interface/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 
+interface IDetailedUser extends IUser {
+    numberOfEvents: number;
+}
+    
+
+// event: Types.ObjectId;
+
+//     @Prop({ type: Types.ObjectId, ref: 'Student', required: true })
+//     student: Types.ObjectId;
+
+//     @Prop({ type: Date, required: true })
+//     date: Date;
+// }
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel('User') private readonly userModel: Model<IUser>) {}
+    constructor(
+        @InjectModel('User') private readonly userModel: Model<IUser>) {}
 
     async getAllUsers() : Promise<IUser[]> {
-        return await this.userModel.find().sort({ name: 1 });
+        return await this.userModel.find({ role: 'user' }).sort({ name: 1 });
     }
 
+    async getDetailedUsers(): Promise<IUser[]> {
+        // get all user (name, total number of attendees, number of events, how many days ago was the last event)
+        const users : IDetailedUser[] = await this.userModel.find().sort({ name: 1 }).lean() ;
+        users.forEach(async (user) => {
+            user.numberOfEvents = user.events.length;
+        });
+
+        return users ;
+    }
     async create(user: CreateUserDto): Promise<IUser> {
         const oldUser = await this.userModel.findOne({ name: { $regex: user.name , $options: 'i' } });
         if (oldUser) {

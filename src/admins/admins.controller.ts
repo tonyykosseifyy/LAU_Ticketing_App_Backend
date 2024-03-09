@@ -6,9 +6,8 @@ import { UseInterceptors } from '@nestjs/common';
 import { RolesInterceptor } from './interceptor';
 
 @UseInterceptors(RolesInterceptor)
-@Roles(UserRole.Admin) 
+@Roles(UserRole.Admin)
 @Controller('dashboard')
-
 export class AdminsController {
     constructor(private readonly adminsService: AdminsService) {}
 
@@ -61,6 +60,21 @@ export class AdminsController {
         }
     }
 
+    // GET detailed users
+    @Get('/users/detailed')
+    async getDetailedUsers(@Res() response) {
+        try {
+            const users = await this.adminsService.getDetailedUsers();
+            return response.status(200).send({
+                users,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
 
 
 }

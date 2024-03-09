@@ -25,6 +25,9 @@ export class AdminsService {
         return await this.usersService.getAllUsers();
     }
 
+    async getDetailedUsers(): Promise<IUser[]> {
+        return await this.usersService.getDetailedUsers();
+    }
     
 
     

@@ -66,6 +66,24 @@ export class ScansService {
     await scan.save();
   } 
 
+  async getEventAttendeesAdmin(eventId: string) : Promise<any[]> {
+    const event = await this.eventModel.findById(eventId);
+    if (!event) {
+        throw new NotFoundException(`Event with ID ${eventId} not found`);
+    }
+    const scans = await this.scanModel.find({ event: eventId }).populate({
+      path: 'student',
+      model: 'Student',
+      select: 'name student_id _id'
+    });
+
+    if (!scans) {
+        throw new NotFoundException(`No scans found for this ${event.name}} event`);
+    }
+
+    return scans ;
+
+  }
   async getEventAttendees(eventId: string, request: AuthenticatedRequest): Promise<any[]> {
     const user = request.user ;
 
