@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { IEvent, IEventWithCount } from './interface/event.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IClub } from '../users/interface/user.interface';
+import { IUser } from '../users/interface/user.interface';
 import { CreateEventDto, UpdateEventDto } from './dto/index.dto';
 import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';
@@ -16,30 +16,30 @@ export class EventsService {
     private cronJobs: Map<string, CronJob> = new Map();
     constructor(
         @InjectModel('Event') private readonly eventModel: Model<IEvent>,
-        @InjectModel('Club') private readonly clubModel: Model<IClub>,
+        @InjectModel('User') private readonly userModel: Model<IUser>,
         @InjectModel('Scan') private readonly scanModel: Model<IScan>,
         private readonly mailService: MailService
     ) {}
 
 
-    async getClubEvents(clubId: string): Promise<IEvent[]> {
-        const club = await this.clubModel.findById(clubId).populate({
+    async getUserEvents(userId: string): Promise<IEvent[]> {
+        const user = await this.userModel.findById(userId).populate({
             path: 'events',
             model: 'Event'
         });
         
-        if (!club) {
-            throw new NotFoundException(`Club with ID ${clubId} not found`);
+        if (!user) {
+            throw new NotFoundException(`Club with ID ${userId} not found`);
         }
 
-        return club.events as unknown[] as IEvent[];
+        return user.events as unknown[] as IEvent[];
     }
 
-    async getActiveClubEvents(clubId: string): Promise<any[]> {
-        const clubObjectId = new Types.ObjectId(clubId);
+    async getActiveUserEvents(userId: string): Promise<any[]> {
+        const userObjectId = new Types.ObjectId(userId);
     
         const events = await this.eventModel.find({
-            clubs: clubObjectId,
+            users: userObjectId,
             end_date: { $gte: new Date() }
         });
         // for each event get the number of attendees
@@ -56,16 +56,16 @@ export class EventsService {
     }
     
     
-    async deleteEvent(eventId: string, club: IClub): Promise<IEvent> {
+    async deleteEvent(eventId: string, user: IUser): Promise<IEvent> {
         const event = await this.eventModel.findById(eventId);
         if (!event) {
             throw new NotFoundException(`Event with ID ${eventId} not found`);
         }
-        if (!event.clubs.includes(club._id)) {
-            throw new BadRequestException(`Event with ID ${eventId} does not belong to club with ID ${club._id}`);
+        if (!event.users.includes(user._id)) {
+            throw new BadRequestException(`Event with ID ${eventId} does not belong to user with ID ${user._id}`);
         }
-        // Remove the event from the club
-        await this.clubModel.findByIdAndUpdate(club._id, { $pull: { events: event._id } });
+        // Remove the event from the user
+        await this.userModel.findByIdAndUpdate(user._id, { $pull: { events: event._id } });
         // Remove the event from the database
         await this.eventModel.findByIdAndDelete(eventId);
 
@@ -78,19 +78,18 @@ export class EventsService {
             this.cronJobs.delete(eventId);
         }
 
-        
         return event;
     }
 
-    async updateEvent(eventId: string, club: IClub, updateEventDto: UpdateEventDto): Promise<any> {
+    async updateEvent(eventId: string, user: IUser, updateEventDto: UpdateEventDto): Promise<any> {
         const { end_date } = updateEventDto;
 
-        const event = await this.eventModel.findById(eventId);
+        const event: IEvent = await this.eventModel.findById(eventId);
         if (!event) {
             throw new NotFoundException(`Event with ID ${eventId} not found`);
         }
-        if (!event.clubs.includes(club._id)) {
-            throw new BadRequestException(`Event with ID ${eventId} does not belong to club with ID ${club._id}`);
+        if (!event.users.includes(user._id)) {
+            throw new BadRequestException(`Event with ID ${eventId} does not belong to user with ID ${user._id}`);
         }
 
         // check that event end date is greater than event start date
@@ -100,7 +99,6 @@ export class EventsService {
         if (endDate < startDate) {
             throw new BadRequestException(`Event end date must be greater than event start date`);
         }
-        
         // update the event
         event.end_date = end_date;
         try {
@@ -116,37 +114,37 @@ export class EventsService {
         if (oldEvent) {
             throw new BadRequestException(`${event.name} Event already exists`);
         }
-        // club_ids is an array of club IDs
-        const club_ids = event.clubs ;
+        // user_ids is an array of user IDs
+        const user_ids = event.users ;
         
         // Reflect function to handle each promise
-        const reflect = async (clubId: string, index: number) => {
+        const reflect = async (userId: string, index: number) => {
             try {
-                const club = await this.clubModel.findById(clubId);
-                if (!club) {
-                    throw new NotFoundException(`Club with ID ${clubId} not found`);
+                const user = await this.userModel.findById(userId);
+                if (!user) {
+                    throw new NotFoundException(`User with ID ${userId} not found`);
                 }
-                return { club, index, status: "resolved" };
+                return { user, index, status: "resolved" };
             } catch (error) {
                 return { error, index, status: "rejected" };
             }
         };
 
-        // Check all clubs
-        let clubsStatus;
+        // Check all users
+        let usersStatus;
 
         try {
-            clubsStatus = await Promise.all(club_ids.map((clubId, index) => reflect(clubId, index)));
+            usersStatus = await Promise.all(user_ids.map((userId, index) => reflect(userId, index)));
         } catch (error) {
-            throw new NotFoundException(`Error checking clubs: ${error}`);
+            throw new NotFoundException(`Error checking users: ${error}`);
         }
 
-        const notFoundClubs = clubsStatus
+        const notFoundUsers = usersStatus
             .filter(result => result.status === "rejected")
-            .map(result => club_ids[result.index]);
+            .map(result => user_ids[result.index]);
 
-        if (notFoundClubs.length > 0) {
-            throw new NotFoundException(`Clubs not found: ${notFoundClubs.join(', ')}`);
+        if (notFoundUsers.length > 0) {
+            throw new NotFoundException(`Clubs not found: ${notFoundUsers.join(', ')}`);
         }
 
         // Create the event
@@ -154,8 +152,8 @@ export class EventsService {
         
         try {
             await newEvent.save();
-            await Promise.all(club_ids.map(clubId => 
-                this.clubModel.findByIdAndUpdate(clubId, { $push: { events: newEvent._id } })
+            await Promise.all(user_ids.map(userId => 
+                this.userModel.findByIdAndUpdate(userId, { $push: { events: newEvent._id } })
             ));
         } catch (error) {
             throw new NotFoundException(`Error creating event: ${error}`);
@@ -167,7 +165,7 @@ export class EventsService {
         return newEvent;
     }  
     
-      scheduleEventEndTask(endDate: Date, eventId: string) {
+    scheduleEventEndTask(endDate: Date, eventId: string) {
         const job = new CronJob(endDate, () => {
             this.handleEventEnd(eventId);
         });

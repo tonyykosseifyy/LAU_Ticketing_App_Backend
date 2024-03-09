@@ -17,15 +17,15 @@ export class ScansService {
 
   
   async scanEvent(scanEventDto: ScanEventDto, eventId: string, request: AuthenticatedRequest): Promise<void> {
-    const club = request.user;
+    const user = request.user;
 
     const event = await this.eventModel.findById(eventId);
     if (!event) {
       throw new NotFoundException(`Event with ID ${eventId} not found`);
     }
     
-    if ( !event.clubs.includes(club._id) ) {
-      throw new NotFoundException(`Club is not part of this event`);
+    if ( !event.users.includes(user._id) ) {
+      throw new NotFoundException(`User is not part of this event`);
     }
 
     // check that the date now if between the start and end date of the event
@@ -67,14 +67,14 @@ export class ScansService {
   } 
 
   async getEventAttendees(eventId: string, request: AuthenticatedRequest): Promise<any[]> {
-    const club = request.user ;
+    const user = request.user ;
 
     const event = await this.eventModel.findById(eventId);
     if (!event) {
         throw new NotFoundException(`Event with ID ${eventId} not found`);
     }
-    // check if club is part of the event
-    if ( !event.clubs.includes(club._id) ) {
+    // check if user is part of the event
+    if ( !event.users.includes(user._id) ) {
         throw new NotFoundException(`Club is not part of this event`);
     }
     

@@ -3,17 +3,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { ClubsModule } from './users/users.module';
+import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
 import { MailModule } from './mail/mail.module';
 import { StudentsModule } from './students/students.module';
-import { ClubsService } from './users/users.service';
+import { UsersService } from './users/users.service';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticatedGuard } from './auth/authenticated.guard';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ScansModule } from './scans/scans.module';
-import { AdminsModule } from './admins/admins.module';
 
 
 @Module({
@@ -25,17 +24,16 @@ import { AdminsModule } from './admins/admins.module';
       `mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0.0gnozrq.mongodb.net/?retryWrites=true&w=majority`,
       { dbName: 'LAU_EVENTS' },
     ),
-    ClubsModule,
+    UsersModule,
     AuthModule,
     EventsModule,
     MailModule,
     StudentsModule,
     ScansModule,
-    AdminsModule
   ],
   providers: [
     AppService,
-    ClubsService,
+    UsersService,
     {
       provide: APP_GUARD,
       useClass: AuthenticatedGuard,

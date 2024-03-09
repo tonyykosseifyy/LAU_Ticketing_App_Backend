@@ -34,5 +34,5 @@ export class CreateEventDto {
     @IsOptional()
     @IsArray()
     @IsMongoId({ each: true, message: 'Each club ID must be a valid MongoDB ObjectId' })
-    clubs?: string[]; 
+    users?: string[]; 
 }

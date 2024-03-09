@@ -20,7 +20,7 @@ export class Event extends Document {
     end_date: Date;
 
     @Prop({ type: [{ type: Types.ObjectId, ref: 'Club' }], default: [] })
-    clubs: Types.ObjectId[];
+    users: Types.ObjectId[];
 }
 
 

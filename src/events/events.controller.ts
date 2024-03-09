@@ -10,10 +10,10 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
-  async getClubEvents(@Req() request: AuthenticatedRequest, @Res() response) {
-    const club = request.user;
+  async getUserEvents(@Req() request: AuthenticatedRequest, @Res() response) {
+    const user = request.user;
     try {
-      const events = await this.eventsService.getClubEvents(club._id);
+      const events = await this.eventsService.getUserEvents(user._id);
       return response.status(200).send({
         events,
       });
@@ -26,10 +26,10 @@ export class EventsController {
   }
 
   @Get('active')
-  async getActiveClubEvents(@Req() request: AuthenticatedRequest) {
-    const club = request.user;
+  async getActiveUserEvents(@Req() request: AuthenticatedRequest) {
+    const user = request.user;
     try {
-      const events = await this.eventsService.getActiveClubEvents(club._id);
+      const events = await this.eventsService.getActiveUserEvents(user._id);
       return events;
     } catch (err) {
       return err;
@@ -43,11 +43,11 @@ export class EventsController {
     @Body() createEventDto: CreateEventDto,
     @Res() response,
   ) {
-    const club = request.user;
-    if (!createEventDto.clubs) {
-      createEventDto.clubs = [];
+    const user = request.user;
+    if (!createEventDto.users) {
+      createEventDto.users = [];
     }
-    createEventDto.clubs.push(club._id);
+    createEventDto.users.push(user._id);
 
     try {
       const newEvent = await this.eventsService.createEvent(createEventDto);
@@ -69,9 +69,9 @@ export class EventsController {
     @Req() request: AuthenticatedRequest,
   ) {
     try {
-      const club = request.user;
+      const user = request.user;
 
-      const event = await this.eventsService.deleteEvent(eventId, club);
+      const event = await this.eventsService.deleteEvent(eventId, user);
       return response.status(200).json({
         message: 'Event has been deleted successfully',
         event,
@@ -92,8 +92,8 @@ export class EventsController {
     @Body() updateEventDto: UpdateEventDto,
   ) {
     try {
-      const club = request.user ;
-      const event = await this.eventsService.updateEvent(eventId, club, updateEventDto);
+      const user = request.user ;
+      const event = await this.eventsService.updateEvent(eventId, user, updateEventDto);
       return response.status(200).json({
         message: 'Event has been updated successfully',
         event,

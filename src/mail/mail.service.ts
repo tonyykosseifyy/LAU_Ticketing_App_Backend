@@ -1,6 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { IClub } from 'src/users/interface/user.interface';
+import { IUser } from 'src/users/interface/user.interface';
 import { Attachment } from './interface/attachment';
 import { IEventWithCount } from 'src/events/interface/event.interface';
 
@@ -8,25 +8,25 @@ import { IEventWithCount } from 'src/events/interface/event.interface';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendEmailVerification(club: IClub, code: string) {
+  async sendEmailVerification(user: IUser, code: string) {
     await this.mailerService.sendMail({
-      to: club.email,
+      to: user.email,
       subject: 'Welcome to LAU Event App! Confirm your Email',
       template: './confirmation',
       context: {
-        name: club.name,
+        name: user.name,
         code,
       },
     });
   }
 
-  async sendResetPassword(club: IClub, code: string) {
+  async sendResetPassword(user: IUser, code: string) {
     await this.mailerService.sendMail({
-      to: club.email,
+      to: user.email,
       subject: 'Password Reset Request',
       template: './reset-password',
       context: {
-        name: club.name,
+        name: user.name,
         code,
       },
     });
