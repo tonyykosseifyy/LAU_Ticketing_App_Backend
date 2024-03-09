@@ -45,6 +45,22 @@ export class AdminsController {
         }
     }
 
-    
+    // GET all users
+    @Get('/users')
+    async getAllUsers(@Res() response) {
+        try {
+            const users = await this.adminsService.getAllUsers();
+            return response.status(200).send({
+                users,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+
+
 
 }

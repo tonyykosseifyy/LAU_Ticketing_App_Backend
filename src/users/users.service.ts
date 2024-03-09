@@ -9,8 +9,8 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
     constructor(@InjectModel('User') private readonly userModel: Model<IUser>) {}
 
-    async getUsers() : Promise<IUser[]> {
-        return await this.userModel.find();
+    async getAllUsers() : Promise<IUser[]> {
+        return await this.userModel.find().sort({ name: 1 });
     }
 
     async create(user: CreateUserDto): Promise<IUser> {

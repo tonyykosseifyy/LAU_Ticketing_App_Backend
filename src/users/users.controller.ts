@@ -7,9 +7,9 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
     @Get()
-    async getUsers(@Res() response) {
+    async getAllUsers(@Res() response) {
         try {
-            const clubs = await this.usersService.getUsers();
+            const clubs = await this.usersService.getAllUsers();
             return response.status(200).json({
                 clubs
             });
