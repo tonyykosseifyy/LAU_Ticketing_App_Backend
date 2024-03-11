@@ -12,7 +12,7 @@ export class StudentsService {
     ) {}
 
     async getAllStudents(): Promise<IStudent[]> {
-        const students = await this.studentModel.find();
+        const students = await this.studentModel.find().sort({ name: 1 });
         return students;
     }
 

@@ -5,12 +5,15 @@ import { IUser } from 'src/users/interface/user.interface';
 import { UsersService } from 'src/users/users.service';
 import { UpdateEventDto } from 'src/events/dto/update-event.dto';
 import { CreateEventDtoAdmin } from 'src/events/dto/index.dto';
+import { IStudent } from 'src/students/interface/student.interface';
+import { StudentsService } from 'src/students/students.service';
 
 @Injectable()
 export class AdminsService {
     constructor(
         private readonly eventsService: EventsService,
         private readonly usersService: UsersService,
+        private readonly studentsService: StudentsService
     ) {}
         
 
@@ -50,4 +53,15 @@ export class AdminsService {
     async getUserById(userId: string): Promise<IUser | null> {
         return await this.usersService.findById(userId);
     }
+
+    // GET Students
+    async getStudents(): Promise<IStudent[]> {
+        return await this.studentsService.getAllStudents();
+    }
+
+    // GET Student By Id
+    async getStudentById(studentId: string): Promise<IStudent> {
+        return await this.studentsService.getStudentById(studentId);
+    }
+
 }
