@@ -10,14 +10,6 @@ interface IDetailedUser extends IUser {
 }
     
 
-// event: Types.ObjectId;
-
-//     @Prop({ type: Types.ObjectId, ref: 'Student', required: true })
-//     student: Types.ObjectId;
-
-//     @Prop({ type: Date, required: true })
-//     date: Date;
-// }
 @Injectable()
 export class UsersService {
     constructor(
@@ -77,7 +69,7 @@ export class UsersService {
         return await this.userModel.findOne({ name: { $regex: name , $options: 'i' } });
     }
 
-    async findById(id: string): Promise<IUser> {
+    async findById(id: string): Promise<IUser | null> {
         if (!isValidObjectId(id)) {
             throw new BadRequestException('Invalid ID format');
         }

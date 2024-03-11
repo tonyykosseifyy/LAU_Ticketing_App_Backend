@@ -21,6 +21,7 @@ export class AdminsService {
     async getEventById(eventId: string): Promise<IEvent> {
         return await this.eventsService.getEventById(eventId);
     }
+    
     // Update Event
     async updateEvent(eventId: string, payload: UpdateEventDto): Promise<IEvent> {
         return await this.eventsService.updateEvent(eventId, payload);
@@ -30,18 +31,19 @@ export class AdminsService {
     async deleteEvent(eventId: string): Promise<IEvent> {
         return await this.eventsService.deleteEventAdmin(eventId);
     }
-
+    // -----------------------------------------
+    
+    // GET All Users
     async getAllUsers(): Promise<IUser[]> {
         return await this.usersService.getAllUsers();
     }
 
+    // GET Detailed Users
     async getDetailedUsers(): Promise<IUser[]> {
         return await this.usersService.getDetailedUsers();
     }
-
-    
-
-    
-
-    
+    // GET User By Id
+    async getUserById(userId: string): Promise<IUser | null> {
+        return await this.usersService.findById(userId);
+    }
 }
