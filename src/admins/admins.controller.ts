@@ -5,6 +5,7 @@ import { UserRole } from '../auth/user-roles';
 import { UseInterceptors } from '@nestjs/common';
 import { RolesInterceptor } from './interceptor';
 import { UpdateEventDto } from '../events/dto/update-event.dto';
+import { CreateEventDtoAdmin } from 'src/events/dto/admin-create-event.dto';
 
 @UseInterceptors(RolesInterceptor)
 @Roles(UserRole.Admin)
@@ -66,7 +67,7 @@ export class AdminsController {
 
     // Create Event
     @Post('/events')
-    async createEvent(@Res() response, @Body() createEventDto) {
+    async createEvent(@Res() response, @Body() createEventDto: CreateEventDtoAdmin) {
         try {
             const event = await this.adminsService.createEvent(createEventDto);
             return response.status(201).send({
@@ -80,7 +81,7 @@ export class AdminsController {
             });
         }
     }
-    
+
     // DELETE Event By Id
     @Delete('/events/:id')
     async deleteEvent(@Req() request, @Res() response) {
