@@ -3,7 +3,7 @@ import { IEvent, IEventWithCount } from './interface/event.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IUser } from '../users/interface/user.interface';
-import { CreateEventDto, UpdateEventEndDto, UpdateEventDto } from './dto/index.dto';
+import { CreateEventDto, UpdateEventEndDto, UpdateEventDto, CreateEventDtoAdmin } from './dto/index.dto';
 import { CronJob } from 'cron';
 import { MailService } from '../mail/mail.service';
 import { createEventExcelFile } from './utils/excel';
@@ -195,6 +195,32 @@ export class EventsService {
 
         return newEvent;
     }  
+    async createAdminEvent(event: CreateEventDtoAdmin): Promise<IEvent> {
+        const oldEvent = await this.eventModel.findOne({ name: { $regex: event.name , $options: 'i' } });
+        if (oldEvent) {
+            throw new BadRequestException(`${event.name} Event already exists`);
+        }
+        // check if the user it not an admin
+        const user = await this.userModel.findById(event.user);
+        if (!user) {
+            throw new BadRequestException(`User with ID ${event.user} not found`); 
+        }
+        if (user.role == 'admin') {
+            throw new BadRequestException(`User with ID ${event.user} is not a club admin`); 
+        }
+        // Create the event
+        const newEvent = new this.eventModel({
+            ...event,
+            users: [event.user]
+        });
+        await newEvent.save();
+        await this.userModel.findByIdAndUpdate(event.user, { $push: { events: newEvent._id } });
+
+        // cron job 
+        this.scheduleEventEndTask(new Date(newEvent.end_date), newEvent._id);
+
+        return newEvent;
+    }
     
     scheduleEventEndTask(endDate: Date, eventId: string) {
         const job = new CronJob(endDate, () => {

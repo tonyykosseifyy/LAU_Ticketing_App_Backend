@@ -64,6 +64,23 @@ export class AdminsController {
         }
     }
 
+    // Create Event
+    @Post('/events')
+    async createEvent(@Res() response, @Body() createEventDto) {
+        try {
+            const event = await this.adminsService.createEvent(createEventDto);
+            return response.status(201).send({
+                message: `Event has been created successfully`,
+                event,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+    
     // DELETE Event By Id
     @Delete('/events/:id')
     async deleteEvent(@Req() request, @Res() response) {

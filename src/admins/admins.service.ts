@@ -4,6 +4,7 @@ import { EventsService } from '../events/events.service';
 import { IUser } from 'src/users/interface/user.interface';
 import { UsersService } from 'src/users/users.service';
 import { UpdateEventDto } from 'src/events/dto/update-event.dto';
+import { CreateEventDtoAdmin } from 'src/events/dto/index.dto';
 
 @Injectable()
 export class AdminsService {
@@ -21,7 +22,10 @@ export class AdminsService {
     async getEventById(eventId: string): Promise<IEvent> {
         return await this.eventsService.getEventById(eventId);
     }
-    
+    // Create Event 
+    async createEvent(createEventDto: CreateEventDtoAdmin) {
+        return await this.eventsService.createAdminEvent(createEventDto);
+    }
     // Update Event
     async updateEvent(eventId: string, payload: UpdateEventDto): Promise<IEvent> {
         return await this.eventsService.updateEvent(eventId, payload);
