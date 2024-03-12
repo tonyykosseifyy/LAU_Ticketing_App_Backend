@@ -16,8 +16,8 @@ export class StudentsService {
         return students;
     }
 
-    async getStudentById(studentId: string): Promise<IStudent> {
-        const student = await this.studentModel.findOne({ studentId });
+    async getStudentById(student_id: number): Promise<IStudent> {
+        const student = await this.studentModel.findOne({ student_id });
         return student;
     }
 

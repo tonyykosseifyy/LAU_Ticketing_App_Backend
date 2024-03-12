@@ -1,4 +1,4 @@
-import { Get, Req, Res, Post, Delete, Put, Controller, Body } from '@nestjs/common';
+import { Get, Req, Res, Post, Delete, Put, Controller, Body, Param } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../auth/user-roles';
@@ -7,6 +7,7 @@ import { RolesInterceptor } from './interceptor';
 import { UpdateEventDto } from '../events/dto/update-event.dto';
 import { CreateEventDtoAdmin } from 'src/events/dto/admin-create-event.dto';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { StudentIdPipe } from 'src/students/validations/student-id-pipe';
 
 @UseInterceptors(RolesInterceptor)
 @Roles(UserRole.Admin)
@@ -151,7 +152,34 @@ export class AdminsController {
     }
     
     // GET Students
-    // @Get("/students")
-    // async getStudents()
+    @Get("/students")
+    async getStudents(@Res() response) {
+        try {
+            const students = await this.adminsService.getStudents();
+            return response.status(200).send({
+                students,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+    @Get("/students/:id")
+    
+    async getStudentById(@Param('id', StudentIdPipe) student_id: number, @Res() response) {
+        try {
+            const student = await this.adminsService.getStudentById(student_id);
+            return response.status(200).send({
+                student,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
 
 }

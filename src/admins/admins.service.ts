@@ -65,8 +65,8 @@ export class AdminsService {
     }
 
     // GET Student By Id
-    async getStudentById(studentId: string): Promise<IStudent> {
-        return await this.studentsService.getStudentById(studentId);
+    async getStudentById(student_id: number): Promise<IStudent> {
+        return await this.studentsService.getStudentById(student_id);
     }
 
     
