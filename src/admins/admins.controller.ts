@@ -6,6 +6,7 @@ import { UseInterceptors } from '@nestjs/common';
 import { RolesInterceptor } from './interceptor';
 import { UpdateEventDto } from '../events/dto/update-event.dto';
 import { CreateEventDtoAdmin } from 'src/events/dto/admin-create-event.dto';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @UseInterceptors(RolesInterceptor)
 @Roles(UserRole.Admin)
@@ -123,6 +124,23 @@ export class AdminsController {
             const users = await this.adminsService.getDetailedUsers();
             return response.status(200).send({
                 users,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+    
+    // Register a User
+    @Post('/users')
+    async registerUser(@Res() response, @Body() user: CreateUserDto) {
+        try {
+            const newUser = await this.adminsService.registerUser(user);
+            return response.status(201).send({
+                message: `User ${newUser.name} has been created successfully`,
+                user: newUser,
               });
         } catch(err) {
             return response.status(err?.status).json({

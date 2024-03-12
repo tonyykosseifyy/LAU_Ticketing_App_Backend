@@ -7,6 +7,7 @@ import { UpdateEventDto } from 'src/events/dto/update-event.dto';
 import { CreateEventDtoAdmin } from 'src/events/dto/index.dto';
 import { IStudent } from 'src/students/interface/student.interface';
 import { StudentsService } from 'src/students/students.service';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class AdminsService {
@@ -38,7 +39,7 @@ export class AdminsService {
     async deleteEvent(eventId: string): Promise<IEvent> {
         return await this.eventsService.deleteEventAdmin(eventId);
     }
-    // -----------------------------------------
+    // ------------------------------------------------
     
     // GET All Users
     async getAllUsers(): Promise<IUser[]> {
@@ -53,6 +54,10 @@ export class AdminsService {
     async getUserById(userId: string): Promise<IUser | null> {
         return await this.usersService.findById(userId);
     }
+    // Register User 
+    async registerUser(user: CreateUserDto): Promise<IUser> {
+        return await this.usersService.create(user);
+    }
 
     // GET Students
     async getStudents(): Promise<IStudent[]> {
@@ -63,5 +68,7 @@ export class AdminsService {
     async getStudentById(studentId: string): Promise<IStudent> {
         return await this.studentsService.getStudentById(studentId);
     }
+
+    
 
 }

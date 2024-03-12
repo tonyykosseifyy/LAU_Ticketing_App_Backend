@@ -29,6 +29,7 @@ export class CreateUserDto {
   @IsString()
   @MaxLength(80)
   @IsEmail({}, { message: 'Invalid email format' })
-  @Matches(/@lau\.edu$/, { message: 'Only LAU emails are accepted' })
+  // temporary for testing
+  // @Matches(/@lau\.edu$/, { message: 'Only LAU emails are accepted' })
   readonly email: string;
 }
