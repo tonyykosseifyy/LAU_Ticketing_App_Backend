@@ -4,15 +4,18 @@ import {
     MaxLength,
     MinLength,
     IsEmail,
+    IsOptional,
   } from 'class-validator';
   
   export class UpdateUserDto {
+    @IsOptional()
     @IsString()
     @MaxLength(80)
     @MinLength(3)
     @IsNotEmpty()
     readonly name: string;
-  
+    
+    @IsOptional()
     @IsString()
     @MaxLength(80)
     @IsEmail({}, { message: 'Invalid email format' })

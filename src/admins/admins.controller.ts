@@ -8,6 +8,7 @@ import { UpdateEventDto } from '../events/dto/update-event.dto';
 import { CreateEventDtoAdmin } from 'src/events/dto/admin-create-event.dto';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { StudentIdPipe } from 'src/students/validations/student-id-pipe';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 @UseInterceptors(RolesInterceptor)
 @Roles(UserRole.Admin)
@@ -151,6 +152,23 @@ export class AdminsController {
         }
     }
     
+    // Update A User
+    @Put('/users/:id')
+    async updateUser(@Res() response, @Body() user: UpdateUserDto, @Req() request) {
+        const userId = request.params.id;
+        try {
+            const newUser = await this.adminsService.updateUser(user, userId);
+            return response.status(200).send({
+                message: `User ${newUser.name} has been updated successfully`,
+                user: newUser,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
     // Delete A User 
     @Delete('/users/:id')
     async deleteUser(@Req() request, @Res() response) {

@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
 import { IUser } from './interface/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { EventsService } from 'src/events/events.service';
 
@@ -58,18 +59,23 @@ export class UsersService {
     }
 
     
-    // async update(user: UpdateUserDto, user_id: string): Promise<IUser> {
-    //     if (!isValidObjectId(user_id)) {
-    //         throw new BadRequestException('Invalid ID format');
-    //     }
-    //     const oldUser = await this.userModel.findById(user_id);
-    //     if (!oldUser) {
-    //         throw new NotFoundException(`User with ID ${user_id} not found`);
-    //     }
+    async update(newUser: UpdateUserDto, user_id: string): Promise<IUser> { // Adjust return type to your User document type
+        const newUserv2 = {
+            ...newUser,
+            verified: false
+        }
+        if (!isValidObjectId(user_id)) {
+            throw new BadRequestException('Invalid ID format');
+        }
 
-    //     // await this.userModel.updateOne({ _id: user_id }, user);
-    //     // return await this.userModel.findById(user_id);
-    // }
+        const options = { new: true }; 
+        const modifiedUser = await this.userModel.findOneAndUpdate({ _id: user_id }, newUserv2, options);
+        if (!modifiedUser) {
+            throw new NotFoundException(`User with ID ${user_id} not found`);
+        }
+        return modifiedUser;
+    }
+    
 
     async delete(id: string): Promise<IUser> {
         if (!isValidObjectId(id)) {

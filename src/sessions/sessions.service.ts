@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ISession } from './interface/session.interface';
 import { Model, isValidObjectId } from 'mongoose';
 import { UsersService } from 'src/users/users.service';
-import { ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb'; // or "mongoose.Types.ObjectId" if using Mongoose
 
 @Injectable()
 export class SessionsService {
@@ -31,18 +31,17 @@ export class SessionsService {
             session.user_id = user_id;
             await session.save();
             return session;
-            
         } catch (error) {
             throw new BadRequestException(error);
         }
     }
-    async deleteUserSessions(session_id: string, user_id: string) {
+
+    async deleteUserSessions(user_id: string) {
         if (!isValidObjectId(user_id)) {
             throw new BadRequestException('Invalid User id format');
         }
         try {
-        await this.sessionModel.deleteMany({ user_id: session_id });
-
+            await this.sessionModel.deleteMany({ user_id: new ObjectId(user_id) });
         } catch(err) {
             throw new BadRequestException(err);
         }

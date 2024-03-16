@@ -8,13 +8,17 @@ import { CreateEventDtoAdmin } from 'src/events/dto/index.dto';
 import { IStudent } from 'src/students/interface/student.interface';
 import { StudentsService } from 'src/students/students.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
+import { NotFoundException } from '@nestjs/common';
+import { SessionsService } from 'src/sessions/sessions.service';
 
 @Injectable()
 export class AdminsService {
     constructor(
         private readonly eventsService: EventsService,
         private readonly usersService: UsersService,
-        private readonly studentsService: StudentsService
+        private readonly studentsService: StudentsService,
+        private readonly sessions: SessionsService
     ) {}
         
 
@@ -57,6 +61,22 @@ export class AdminsService {
     // Register User 
     async registerUser(user: CreateUserDto): Promise<IUser> {
         return await this.usersService.create(user);
+    }
+
+    // Update User 
+    async updateUser(newUser: UpdateUserDto, userId: string): Promise<IUser> {
+        const { email } = newUser ;
+        const user = await this.usersService.findById(userId);
+
+        if (!user) {
+            throw new NotFoundException(`User ${userId} does not exist`);
+        }
+
+        if (email && email != user.email) {
+            // log out all sessions
+            await this.sessions.deleteUserSessions(userId);
+        }
+        return await this.usersService.update(newUser, userId);
     }
     // Delete User
     async deleteUser(userId: string): Promise<IUser> {
