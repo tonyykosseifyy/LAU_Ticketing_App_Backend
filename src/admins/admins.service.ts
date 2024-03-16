@@ -58,6 +58,10 @@ export class AdminsService {
     async registerUser(user: CreateUserDto): Promise<IUser> {
         return await this.usersService.create(user);
     }
+    // Delete User
+    async deleteUser(userId: string): Promise<IUser> {
+        return await this.usersService.delete(userId);
+    }
 
     // GET Students
     async getStudents(): Promise<IStudent[]> {

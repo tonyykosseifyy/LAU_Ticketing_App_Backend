@@ -151,6 +151,23 @@ export class AdminsController {
         }
     }
     
+    // Delete A User 
+    @Delete('/users/:id')
+    async deleteUser(@Req() request, @Res() response) {
+        const userId = request.params.id;
+        try {
+            const user = await this.adminsService.deleteUser(userId);
+            return response.status(200).send({
+                message: `User ${user.name} has been deleted successfully`,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+
     // GET Students
     @Get("/students")
     async getStudents(@Res() response) {

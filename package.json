@@ -36,6 +36,7 @@
     "@types/passport-local": "^1.0.38",
     "@types/set-tz": "^0.2.2",
     "bcrypt": "^5.1.1",
+    "bottleneck": "^2.19.5",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "connect-mongo": "^5.1.0",

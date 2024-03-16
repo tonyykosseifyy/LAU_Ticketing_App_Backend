@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventsController } from './events.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,7 +9,13 @@ import { MailModule } from '../mail/mail.module';
 import { ScansModule } from 'src/scans/scans.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]), UsersModule, StudentsModule, MailModule, ScansModule],
+  imports: [
+    MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]),
+    forwardRef(() => UsersModule), // Use forwardRef here
+    StudentsModule,
+    MailModule,
+    ScansModule,
+  ],
   providers: [EventsService],
   controllers: [EventsController],
   exports: [EventsService, MongooseModule]

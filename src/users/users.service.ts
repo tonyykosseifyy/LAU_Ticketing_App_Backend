@@ -3,8 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
 import { IUser } from './interface/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { EventsService } from 'src/events/events.service';
+
 
 interface IDetailedUser extends IUser {
     numberOfEvents: number;
@@ -14,7 +15,8 @@ interface IDetailedUser extends IUser {
 @Injectable()
 export class UsersService {
     constructor(
-        @InjectModel('User') private readonly userModel: Model<IUser>
+        @InjectModel('User') private readonly userModel: Model<IUser>,
+        private readonly eventsService: EventsService
         ) {}
 
     async getAllUsers() : Promise<IUser[]> {
@@ -55,6 +57,7 @@ export class UsersService {
         return newUser;
     }
 
+    
     // async update(user: UpdateUserDto, user_id: string): Promise<IUser> {
     //     if (!isValidObjectId(user_id)) {
     //         throw new BadRequestException('Invalid ID format');
@@ -76,11 +79,17 @@ export class UsersService {
         if (!user) {
             throw new NotFoundException(`Club with ID ${id} not found`);
         }
+
+        // delete all events associated with the user
+        await this.eventsService.deleteMultipleEvents(user.events);
         
+        // delete user
         await this.userModel.deleteOne({ _id: id });
         return user;
     }
 
+    
+    
 
     async getUser(name: string): Promise<IUser> {
         return await this.userModel.findOne({ name: { $regex: name , $options: 'i' } });

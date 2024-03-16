@@ -9,6 +9,7 @@ import { MailService } from '../mail/mail.service';
 import { createEventExcelFile } from './utils/excel';
 import { IScan, IScanDetailed } from '../scans/interface/scan.interface';
 import { Types } from 'mongoose';
+import Bottleneck from 'bottleneck'
 
 
 @Injectable()
@@ -59,6 +60,22 @@ export class EventsService {
         return eventsWithCount;
     }
     
+    
+      
+    async deleteMultipleEvents(eventsIds: string[]): Promise<void> {
+        const limiter = new Bottleneck({
+            maxConcurrent: 7, // Maximum number of concurrent jobs
+        });
+
+        const deletePromises = eventsIds.map(eventId =>
+            limiter.schedule(() => this.deleteEventAdmin(eventId))
+        );
+        
+        await Promise.all(deletePromises);
+    }
+      
+
+      
     async deleteEventAdmin(eventId: string): Promise<IEvent> {
         const event = await this.eventModel.findById(eventId);
         if (!event) {
