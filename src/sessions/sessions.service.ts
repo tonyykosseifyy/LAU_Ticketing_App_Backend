@@ -14,9 +14,7 @@ export class SessionsService {
 
     async attachUser(session_id: string, user_id: string) {
         if (!isValidObjectId(user_id)) {
-            console.log(session_id);
-            console.log(user_id);
-            throw new BadRequestException('Invalid Session  format');
+            throw new BadRequestException('Invalid User id format');
         }
         const session = await this.sessionModel.findOne({ _id: session_id });
         
@@ -36,6 +34,17 @@ export class SessionsService {
             
         } catch (error) {
             throw new BadRequestException(error);
+        }
+    }
+    async deleteUserSessions(session_id: string, user_id: string) {
+        if (!isValidObjectId(user_id)) {
+            throw new BadRequestException('Invalid User id format');
+        }
+        try {
+        await this.sessionModel.deleteMany({ user_id: session_id });
+
+        } catch(err) {
+            throw new BadRequestException(err);
         }
     }
 }
