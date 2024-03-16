@@ -27,6 +27,20 @@ export class AuthenticatedGuard implements CanActivate {
     if (!request.isAuthenticated()) {
       return false; // Stop here if user is not authenticated
     }
+    // if (!request.session.userID) {
+    //   console.log(request.user);
+    //   console.log(`user id: ${request.user._id}`);
+      
+    //   request.session.userID = request.user._id;
+    //   request.session.save((err) => {
+    //     if (err) {
+    //       console.error('Session save error:', err);
+    //     } else {
+    //       console.log('Session saved successfully');
+    //     }
+    //   });
+
+    // }
     
 
     const requiredRoles = this.reflector.get<UserRole[]>('roles', context.getHandler()) || [];

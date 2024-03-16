@@ -128,6 +128,7 @@ export class AuthService {
         if (err) {
           reject(err);
         }
+        // req.session.userID = user._id;
         resolve(returned_user);
       });
     });

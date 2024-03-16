@@ -14,6 +14,7 @@ import { AuthenticatedGuard } from './auth/authenticated.guard';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ScansModule } from './scans/scans.module';
 import { AdminsModule } from './admins/admins.module';
+import { SessionsModule } from './sessions/sessions.module';
 
 
 @Module({
@@ -32,6 +33,7 @@ import { AdminsModule } from './admins/admins.module';
     StudentsModule,
     ScansModule,
     AdminsModule,
+    SessionsModule,
   ],
   providers: [
     AppService,
