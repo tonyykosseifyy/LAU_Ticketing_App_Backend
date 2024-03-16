@@ -20,36 +20,5 @@ export class UsersController {
             });
         }
     }
-
-    @Post()
-    async create(@Res() response, @Body() createUserDto: CreateUserDto) {
-        try {
-            const newUser = await this.usersService.create(createUserDto);
-            return response.status(201).json({
-                message: "User has been created successfully",
-                newUser
-            });
-          } catch (err) {
-            return response.status(err.status).json({
-                status: err.status,
-                message: err.message
-            });
-          }
-    }
-
-    @Delete('/:id')
-    async delete(@Param('id') id: string, @Res() response) {
-        try {
-            const user = await this.usersService.delete(id);
-            return response.status(200).json({
-                message: `User ${id} has been deleted successfully`,
-                user
-            });
-        } catch(err) {
-            return response.status(err.status).json({
-                status: err.status,
-                message: err.message
-            });
-        }
-    }
+    
 }
