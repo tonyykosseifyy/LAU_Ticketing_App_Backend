@@ -12,7 +12,7 @@ export class SessionsService {
         private readonly usersService: UsersService
     ) {}
 
-    async attachUser(session_id: ObjectId, user_id: string) {
+    async attachUser(session_id: string, user_id: string) {
         if (!isValidObjectId(user_id)) {
             console.log(session_id);
             console.log(user_id);

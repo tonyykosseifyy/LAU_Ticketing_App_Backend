@@ -6,6 +6,7 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export interface LoginRequest extends Request {
+    sessionID: string;
     user: {
         user: IUser
     }

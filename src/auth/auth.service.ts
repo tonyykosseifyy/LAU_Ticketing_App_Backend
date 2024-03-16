@@ -6,6 +6,7 @@ import { MailService } from '../mail/mail.service';
 import { VerifyDto, ForgotPasswordReqDto, ResetPasswordDto } from "./dto/index.dto"; 
 import { IUserResponse } from 'src/users/interface/user.interface';
 import { LoginRequest } from 'src/interface/request.interface';
+import { SessionsService } from 'src/sessions/sessions.service';
 
 const otpGenerator = require('otp-generator');
 
@@ -13,7 +14,8 @@ const otpGenerator = require('otp-generator');
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
+    private readonly sessionService: SessionsService
   ) {}
 
   async forgotPassword(forgotPasswordReqDto: ForgotPasswordReqDto) {
@@ -183,6 +185,7 @@ export class AuthService {
   async login(@Req() request: LoginRequest): Promise<IUserResponse> {
     let { user } = request.user;
     // return user without code, expires at, password, events fields
+    await this.sessionService.attachUser(request.sessionID, user._id);
     
     const returned_user: IUserResponse = {
       _id: user._id,
