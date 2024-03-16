@@ -88,7 +88,7 @@ export class AuthService {
     };
   }
 
-  async verify(verifyDto: VerifyDto, req): Promise<IUserResponse> {
+  async verify(verifyDto: VerifyDto, @Req() request: any): Promise<IUserResponse> {
     const { name, code, password } = verifyDto;
 
     const user = await this.usersService.getUser(name);
@@ -119,6 +119,8 @@ export class AuthService {
 
     await user.save();
 
+    
+
     let returned_user: IUserResponse = {
       _id: user._id,
       name: user.name,
@@ -126,11 +128,14 @@ export class AuthService {
     }
     // generate a session cookie
     return new Promise((resolve, reject) => {
-      req.login(user, (err) => {
+      request.login(user, (err) => {
         if (err) {
           reject(err);
         }
         // req.session.userID = user._id;
+        this.sessionService.attachUser(request.sessionID, user._id).then((session) => {
+          // console.log('session', session);
+        });
         resolve(returned_user);
       });
     });
@@ -186,7 +191,7 @@ export class AuthService {
     let { user } = request.user;
     // return user without code, expires at, password, events fields
     await this.sessionService.attachUser(request.sessionID, user._id);
-    
+
     const returned_user: IUserResponse = {
       _id: user._id,
       name: user.name,
