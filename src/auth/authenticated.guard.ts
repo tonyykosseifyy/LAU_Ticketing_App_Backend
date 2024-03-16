@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from './user-roles';
+import { SessionsService } from 'src/sessions/sessions.service';
 
 const authRoutes = (request: any) : boolean => {
   if ((['/auth/verify', '/auth/login', '/auth/forgot-password', '/auth/reset-password'].includes(request.route.path)) && request.route.methods.post ) {
@@ -12,7 +12,7 @@ const authRoutes = (request: any) : boolean => {
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
   constructor(
-    private usersService: UsersService,
+    private sessionService: SessionsService,
     private reflector: Reflector
   ) {}
 
@@ -27,20 +27,15 @@ export class AuthenticatedGuard implements CanActivate {
     if (!request.isAuthenticated()) {
       return false; // Stop here if user is not authenticated
     }
-    // if (!request.session.userID) {
-    //   console.log(request.user);
-    //   console.log(`user id: ${request.user._id}`);
+    if (!request.session.userID) {
+      const session_id = request.sessionID;
       
-    //   request.session.userID = request.user._id;
-    //   request.session.save((err) => {
-    //     if (err) {
-    //       console.error('Session save error:', err);
-    //     } else {
-    //       console.log('Session saved successfully');
-    //     }
-    //   });
-
-    // }
+      try {
+        await this.sessionService.attachUser(session_id, request.user._id);
+      } catch(error) {
+          console.log(error);
+      }
+    }
     
 
     const requiredRoles = this.reflector.get<UserRole[]>('roles', context.getHandler()) || [];

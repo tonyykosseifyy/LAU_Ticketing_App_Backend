@@ -6,9 +6,10 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 import { Session } from './session.serializer';
 import { MailModule } from '../mail/mail.module';
+import { SessionsModule } from 'src/sessions/sessions.module';
 
 @Module({
-  imports: [UsersModule, PassportModule.register({ session: true }), MailModule],
+  imports: [UsersModule, PassportModule.register({ session: true }), MailModule, SessionsModule],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, Session],
 })
