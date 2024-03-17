@@ -284,12 +284,26 @@ export class EventsService {
     }
     
 
-    async getEventById(eventId: string): Promise<IEvent> {
+    async getEventById(eventId: string): Promise<any> {
         const event = await this.eventModel.findById(eventId);
+
         if (!event) {
             throw new NotFoundException(`Event with ID ${eventId} not found`);
         }
-        return event;
+        const scans = await this.scanModel.find({ event: eventId }).populate({
+            path: 'student',
+            model: 'Student',
+            select: 'name student_id _id'
+        });
+        const eventData = event.toObject();
+
+        const data: any = {
+            ...eventData,
+            scans: scans,
+            attendee_count: scans.length
+        };
+        
+        return data;
     }
 
     async getEventsDashboard(): Promise<IEvent[]> {
