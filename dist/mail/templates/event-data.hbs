@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            margin: auto;
+            width: 80%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        .container_logo {
+            width: 100% ;
+            display: flex;
+            justify-content: center;
+        }
+        .container img {
+            object-fit: contain;
+            height: auto ;
+            width: 100%;
+            margin-bottom: 20px;
+            max-height: 180px ;
+        }
+        .p_details {
+            margin-top: 18px ;
+            text-align: left;
+        }
+        .details {
+            padding-left: 10px ;
+            text-align: left;
+        }
+        .info {
+            color: #016D58;
+            margin-left: 5px;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="container_logo">
+            <img src="https://toolbox.lau.edu.lb/_ui/lau-logo-social-media.jpg" alt="LAU logo" /> 
+        </div>
+
+        <p>Dear Mr. Alan</p>
+        <p>Please find attached an Excel sheet containing detailed data about the attendees of the <span style="color:#016D58;">{{ name }}</span> event</p>
+        <p class="p_details">Event Details: </p>
+        <div class="details">
+            <li>Name: <span class="info">{{ name }}</span></li>
+            <li>Start Date: <span class="info">{{ start_date }}</span></li>
+            <li>End Date: <span class="info">{{ end_date }}</span></li>
+            <li>Attendee Count: <span class="info">{{ attendee_count }} students</span></li>
+        </div>
+        
+        <div class="footer">
+            <p>Thank you for using our App!</p>
+        </div>
+    </div>
+</body>
+</html>
