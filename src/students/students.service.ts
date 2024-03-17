@@ -4,6 +4,7 @@ import { IStudentProtected } from './interface/protected-student.interface';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateStudentDto } from './dto/update-student.dto'; 
+import { CreateStudentDto } from './dto/create-student.dto';
 
 @Injectable()
 export class StudentsService {
@@ -21,23 +22,27 @@ export class StudentsService {
         return student;
     }
 
-    async updateStudent(updateStudentDto: UpdateStudentDto, student_id: number): Promise<any> {
+    async updateStudent(updateStudentDto: UpdateStudentDto, student_id: number): Promise<IStudent> {
         const { name } = updateStudentDto ;
-        
-        const student: IStudentProtected = await this.studentModel.findOne({
-            student_id
-        });
+        const student = await this.studentModel.findOneAndUpdate({ student_id }, { name }, { new: true });
+
         if (!student) {
             throw new NotFoundException(`Student with ID: ${student_id} does not exist.`);
         }   
-        student.name = name ;
-        await student.save();
 
-        let returned_student = {
-            student_id,
-            name
+        return student ;
+    }
+
+    async createStudent(student: CreateStudentDto): Promise<IStudent> {
+        const { student_id } = student ;
+
+        const studentExist = await this.studentModel.findOne({ student_id });
+        if (studentExist) {
+            throw new NotFoundException(`Student with ID: ${student_id} already exists.`);
         }
-        return returned_student ;
+
+        const newStudent = new this.studentModel(student);
+        return await newStudent.save();
     }
 
 

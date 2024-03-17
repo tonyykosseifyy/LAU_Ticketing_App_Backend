@@ -9,6 +9,8 @@ import { CreateEventDtoAdmin } from 'src/events/dto/admin-create-event.dto';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { StudentIdPipe } from 'src/students/validations/student-id-pipe';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
+import { CreateStudentDto } from 'src/students/dto/create-student.dto';
+import { UpdateStudentDto } from 'src/students/dto/update-student.dto';
 
 @UseInterceptors(RolesInterceptor)
 @Roles(UserRole.Admin)
@@ -201,8 +203,8 @@ export class AdminsController {
             });
         }
     }
+
     @Get("/students/:id")
-    
     async getStudentById(@Param('id', StudentIdPipe) student_id: number, @Res() response) {
         try {
             const student = await this.adminsService.getStudentById(student_id);
@@ -217,4 +219,35 @@ export class AdminsController {
         }
     }
 
+    @Put('/students/:id')
+    async updateStudent(@Param('id', StudentIdPipe) student_id: number, @Res() response, @Body() updateStudentDto: UpdateStudentDto) {
+        try {
+            const student = await this.adminsService.updateStudent(updateStudentDto, student_id);
+            return response.status(200).send({
+                message: `Student ${student.name} has been updated successfully`,
+                student,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
+
+    @Post('/students')
+    async createStudent(@Res() response, @Body() createStudentDto: CreateStudentDto) {
+        try {
+            const student = await this.adminsService.createStudent(createStudentDto);
+            return response.status(201).send({
+                message: `Student ${student.name} has been created successfully`,
+                student,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
 }

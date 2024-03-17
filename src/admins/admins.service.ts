@@ -11,6 +11,8 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { NotFoundException } from '@nestjs/common';
 import { SessionsService } from 'src/sessions/sessions.service';
+import { CreateStudentDto } from 'src/students/dto/create-student.dto';
+import { UpdateStudentDto } from 'src/students/dto/update-student.dto';
 
 @Injectable()
 export class AdminsService {
@@ -43,7 +45,7 @@ export class AdminsService {
     async deleteEvent(eventId: string): Promise<IEvent> {
         return await this.eventsService.deleteEventAdmin(eventId);
     }
-    // ------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     
     // GET All Users
     async getAllUsers(): Promise<IUser[]> {
@@ -78,10 +80,14 @@ export class AdminsService {
         }
         return await this.usersService.update(newUser, userId);
     }
+    
     // Delete User
     async deleteUser(userId: string): Promise<IUser> {
         return await this.usersService.delete(userId);
     }
+
+    // --------------------------------------------------------------------------------------------
+
 
     // GET Students
     async getStudents(): Promise<IStudent[]> {
@@ -92,6 +98,20 @@ export class AdminsService {
     async getStudentById(student_id: number): Promise<IStudent> {
         return await this.studentsService.getStudentById(student_id);
     }
+
+    // Update Student 
+    async updateStudent(updateStudentDto: UpdateStudentDto, student_id: number): Promise<IStudent> {
+        return await this.studentsService.updateStudent(updateStudentDto, student_id);
+    }
+
+    // Create Student
+    async createStudent(student: CreateStudentDto): Promise<IStudent> {
+        return await this.studentsService.createStudent(student);
+    }
+
+
+
+    
 
     
 
