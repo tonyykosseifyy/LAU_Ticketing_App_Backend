@@ -18,7 +18,7 @@ async function bootstrap() {
   app.enableCors(
     // origin everywhere
     {
-      origin: "*",
+      origin: ['http://localhost:3000', 'http://localhost:3001'],
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       preflightContinue: false,
       optionsSuccessStatus: 204,
