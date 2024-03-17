@@ -250,4 +250,18 @@ export class AdminsController {
             });
         }
     }
+    @Delete('/students/:id')
+    async deleteStudent(@Param('id', StudentIdPipe) student_id: number, @Res() response) {
+        try {
+            await this.adminsService.deleteStudent(student_id);
+            return response.status(200).send({
+                message: `Student ${student_id} has been deleted successfully`,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
 }

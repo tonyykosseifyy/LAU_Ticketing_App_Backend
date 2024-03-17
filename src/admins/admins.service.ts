@@ -109,6 +109,11 @@ export class AdminsService {
         return await this.studentsService.createStudent(student);
     }
 
+    // Delete Student
+    async deleteStudent(student_id: number): Promise<void> {
+        return await this.studentsService.deleteStudent(student_id);
+    }
+
 
 
     

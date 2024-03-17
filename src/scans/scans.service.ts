@@ -109,4 +109,12 @@ export class ScansService {
 
     return scans ;
   }
+  async deleteStudentScans(studentId: number): Promise<void> {
+    const student = await this.studentModel.findOne({ student_id: studentId });
+    if (!student) {
+      throw new NotFoundException(`Student with ID ${studentId} not found`);
+    }
+
+    await this.scanModel.deleteMany({ student: student._id });
+  }
 }

@@ -8,7 +8,7 @@ import { EventsModule } from 'src/events/events.module';
 
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Scan', schema: ScanSchema }]), StudentsModule, forwardRef(() => EventsModule)],
+  imports: [MongooseModule.forFeature([{ name: 'Scan', schema: ScanSchema }]), forwardRef(() => StudentsModule), forwardRef(() => EventsModule)],
   controllers: [ScansController],
   providers: [ScansService],
   exports: [ScansService, MongooseModule]
