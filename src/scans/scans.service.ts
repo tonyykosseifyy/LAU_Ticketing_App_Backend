@@ -65,6 +65,17 @@ export class ScansService {
 
     await scan.save();
   } 
+  
+  async getStudentEvents(student_object_id: number): Promise<any[]> {
+    const scans = await this.scanModel.find({ student: student_object_id }).populate({
+      path: 'event',
+      model: 'Event',
+      select: '_id name start_date end_date'
+    });
+
+    return scans ;
+  }
+
 
   async getEventAttendeesAdmin(eventId: string) : Promise<any[]> {
     const event = await this.eventModel.findById(eventId);

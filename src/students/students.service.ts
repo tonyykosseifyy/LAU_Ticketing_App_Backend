@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UpdateStudentDto } from './dto/update-student.dto'; 
 import { CreateStudentDto } from './dto/create-student.dto';
 import { ScansService } from 'src/scans/scans.service';
+import { IStudentDetailed } from './interface/student-detailed.interface';
 
 @Injectable()
 export class StudentsService {
@@ -19,10 +20,19 @@ export class StudentsService {
         return students;
     }
 
-    async getStudentById(student_id: number): Promise<IStudent> {
-        const student = await this.studentModel.findOne({ student_id });
-        return student;
+    async getStudentById(student_id: number): Promise<any> {
+        const student = await this.studentModel.findOne({ student_id }).lean();
+        const scans = await this.scans.getStudentEvents(student._id);
+        
+        let detailedStudent = {
+            ...student,
+            scans: scans,
+            attendedEvents: scans.length
+        };
+    
+        return detailedStudent;
     }
+    
 
     async updateStudent(updateStudentDto: UpdateStudentDto, student_id: number): Promise<IStudent> {
         const { name } = updateStudentDto ;
