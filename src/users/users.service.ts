@@ -26,7 +26,7 @@ export class UsersService {
 
     async getDetailedUsers(): Promise<IUser[]> {
         // get all user (name, total number of attendees, number of events, how many days ago was the last event)
-        const users : IDetailedUser[] = await this.userModel.find().sort({ name: 1 }).lean() ;
+        const users : IDetailedUser[] = await this.userModel.find({role: "user"}).sort({ name: 1 }).lean() ;
         users.forEach(async (user) => {
             user.numberOfEvents = user.events.length;
         });
