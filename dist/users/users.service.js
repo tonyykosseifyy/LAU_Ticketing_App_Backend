@@ -27,7 +27,7 @@ let UsersService = class UsersService {
         return await this.userModel.find({ role: 'user' }).sort({ name: 1 });
     }
     async getDetailedUsers() {
-        const users = await this.userModel.find().sort({ name: 1 }).lean();
+        const users = await this.userModel.find({ role: "user" }).sort({ name: 1 }).lean();
         users.forEach(async (user) => {
             user.numberOfEvents = user.events.length;
         });

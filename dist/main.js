@@ -12,7 +12,7 @@ async function bootstrap() {
     const configService = app.get(config_1.ConfigService);
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
     app.enableCors({
-        origin: "*",
+        origin: ['http://localhost:3000', 'http://localhost:3001'],
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         preflightContinue: false,
         optionsSuccessStatus: 204,
