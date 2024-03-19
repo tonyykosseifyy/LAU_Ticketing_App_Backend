@@ -150,6 +150,20 @@ let AdminsController = class AdminsController {
             });
         }
     }
+    async getUserById(userId, response) {
+        try {
+            const user = await this.adminsService.getUserById(userId);
+            return response.status(200).send({
+                user,
+            });
+        }
+        catch (err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
     async updateUser(response, user, request) {
         const userId = request.params.id;
         try {
@@ -317,6 +331,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], AdminsController.prototype, "registerUser", null);
+__decorate([
+    (0, common_1.Get)("/users/:id"),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], AdminsController.prototype, "getUserById", null);
 __decorate([
     (0, common_1.Put)('/users/:id'),
     __param(0, (0, common_1.Res)()),

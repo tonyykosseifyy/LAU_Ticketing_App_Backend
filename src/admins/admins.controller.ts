@@ -153,7 +153,21 @@ export class AdminsController {
             });
         }
     }
-    
+    // Get A User By Id
+    @Get("/users/:id")
+    async getUserById(@Param('id') userId: string, @Res() response) {
+        try {
+            const user = await this.adminsService.getUserById(userId);
+            return response.status(200).send({
+                user,
+              });
+        } catch(err) {
+            return response.status(err?.status).json({
+                status: err?.status,
+                message: err.message,
+            });
+        }
+    }
     // Update A User
     @Put('/users/:id')
     async updateUser(@Res() response, @Body() user: UpdateUserDto, @Req() request) {

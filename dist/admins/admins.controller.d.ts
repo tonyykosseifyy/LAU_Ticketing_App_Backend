@@ -16,6 +16,7 @@ export declare class AdminsController {
     getAllUsers(response: any): Promise<any>;
     getDetailedUsers(response: any): Promise<any>;
     registerUser(response: any, user: CreateUserDto): Promise<any>;
+    getUserById(userId: string, response: any): Promise<any>;
     updateUser(response: any, user: UpdateUserDto, request: any): Promise<any>;
     deleteUser(request: any, response: any): Promise<any>;
     getStudents(response: any): Promise<any>;
