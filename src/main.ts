@@ -24,7 +24,6 @@ async function bootstrap() {
       optionsSuccessStatus: 204,
       credentials: true,
     }
-
   );
     
   app.use(
