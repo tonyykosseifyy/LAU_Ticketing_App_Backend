@@ -108,7 +108,11 @@ export class UsersService {
         if (!isValidObjectId(id)) {
             throw new BadRequestException('Invalid ID format');
         }
-        const user = await this.userModel.findById(id).populate('events');
+        const user = await this.userModel.findById(id).populate({
+            path: 'events',
+            model: 'Event'
+        });
+        
 
         if (!user) {
             return null ;
