@@ -16,7 +16,7 @@ export class RolesInterceptor implements NestInterceptor {
 
     const { user } = context.switchToHttp().getRequest();
     
-    const hasRole = requiredRoles.includes(user.role);
+    const hasRole = requiredRoles.includes(user.role || UserRole.User);
     if (!hasRole) {
       throw new UnauthorizedException();
     }

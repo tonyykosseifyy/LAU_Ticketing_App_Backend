@@ -5,6 +5,7 @@ import { MailService } from './mail.service';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
 // console.log(__dirname + '/templates')
+// dir: __dirname.slice(0, -8) + __dirname.slice(-4) + '/templates' ,
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { ConfigService } from '@nestjs/config';
           from: `"No Reply - LAU Events App" <${config.get('MAIL_FROM')}>`,
         },
         template: {
-          dir: __dirname.slice(0, -8) + __dirname.slice(-4) + '/templates' ,
+          dir: __dirname + '/templates',
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
