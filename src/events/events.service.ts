@@ -23,7 +23,11 @@ export class EventsService {
     ) {}
 
     async getAllEvents(): Promise<IEvent[]> {
-        const events = await this.eventModel.find().sort({ start_date: -1 });
+        const events = await this.eventModel.find().sort({ start_date: -1 }).populate({
+            path: 'users',
+            model: 'User',
+            select: 'name'
+        });
         return events;
     }
     
